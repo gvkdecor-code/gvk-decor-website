@@ -1,0 +1,2 @@
+# Store normalized text in Git; restore Windows launcher with native line endings.
+START-PREVIEW.cmd text eol=crlf

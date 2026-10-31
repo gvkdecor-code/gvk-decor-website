@@ -1,97 +1,103 @@
 # GVK Decor
 
-A responsive, six-page portfolio for GVK Decor, a bespoke home furnishings brand
-established in 1959 in Jubilee Hills, Hyderabad. React + Vite, reusable layout and
-media components, centralized content, and self-hosted open-source fonts.
+**Crafting Timeless Spaces Since 1959**
 
-## Local development
+The existing GVK Decor luxury portfolio, built with React and Vite. Six pages:
+Home, Our Legacy, Collections, Projects, Behind the Craft and Contact. No store,
+checkout, payment, public deployment or analytics is configured.
 
-Requires Node.js 22.12+ (validated with 24.19) and npm.
+## Private Windows preview
+
+1. Install Node.js **LTS** from https://nodejs.org/.
+2. Download the **main** branch from GitHub via **Code → Download ZIP**, then
+   **Extract All**. Use a fresh download for this revision.
+3. Open the extracted folder containing package.json and double-click
+   **START-PREVIEW.cmd**. Wait for **VITE ready**.
+4. Open **http://127.0.0.1:5173** in Chrome. Keep the command window open;
+   press **Ctrl+C** there to stop.
+
+The helper binds only to your Windows computer. It does not upload files,
+push Git changes or publish the website. Full troubleshooting and manual commands:
+[Windows preview guide](docs/WINDOWS-PREVIEW.md). The application was built and browser-tested on Linux; the .cmd file itself
+has not been executed on Windows here.
+
+## Development and verification
+
+Requires Node.js 22.12+ (validated on 24.19), npm and a modern browser.
 
 ```sh
 npm ci
-npm run dev -- --port 5173 --strictPort
+npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
 ```
 
 ```sh
 npm run build
-npm run preview -- --port 4173
 npm test
+npm run format:check
 ```
 
-Browser tests use `/usr/bin/chromium` in this cloud environment. For another
-machine, remove `executablePath` from `playwright.config.js` and run
-`npx playwright install chromium` first. The development and preview commands
-serve locally; they do not publish or deploy anything. Hosting must rewrite
-unknown application routes to `index.html` for React Router deep links.
+Browser tests use `/usr/bin/chromium` in this cloud environment. On another
+machine, remove executablePath from playwright.config.js and run
+`npx playwright install chromium` before testing. Deployment, if later approved,
+must rewrite application routes to index.html for React Router deep links.
 
-## Content and contact configuration
+## Current brand and media status
 
-- `src/data/site.js`: collections, verified project entries, craft film, contacts.
-- `src/components/`: layout, navigation, enquiry link, image/video fallback.
-- `src/pages.jsx`: six page views and not-found page.
-- `src/styles.css`: responsive design tokens and styling, reduced-motion support.
-- `public/media/README.md`: adding approved Google Drive photography and video.
-- Copy `.env.example` to `.env.local`; set the real `VITE_WHATSAPP_NUMBER`
-  (international digits, e.g. country code + number) and `VITE_APPOINTMENT_EMAIL`.
-  These are public business details, never secrets. Restart Vite after changes.
+The uploaded **GVK Decor_Pitch Deck.pdf** was reviewed page by page. Its embedded
+gold logo was extracted with its alpha mask and transparent padding trimmed;
+the artwork was not redrawn or recoloured. Selected photographs were extracted
+and optimized as WebP; collage panels were cropped at their existing boundaries.
+Their source pages, PDF image IDs, crop rectangles, dimensions and selection
+reasons are recorded in [the media manifest](docs/deck-media-manifest.json).
+The 21MB source PDF stays outside the public application.
 
-WhatsApp opens a prepared chat once configured; until then the floating enquiry
-button leads to Contact. The appointment form uses a prepared `mailto:` email;
-it does not store data, send automatically, or promise a confirmed booking. It
-uses the provisional approved enquiry email by default. Production lead capture can
-later use a separately configured server endpoint with appropriate spam protection.
+The opening uses the deck's largest room photograph, pending an actual opening
+film. The craft sequence uses deck curtain and handwork photographs. Three
+source-attributed deck selections have full-screen presentations and galleries.
+Their titles describe images, not invented completed projects. Project names,
+locations, credits and permissions need confirmation before final case studies.
+`projects` remains empty; `deckSelections` is explicitly separate.
 
-## Content status and launch requirements
+**No real video clips have been supplied.** Review them before choosing a final
+opening film or scroll-scrub cut. See [media review and outstanding files](docs/MEDIA-REVIEW.md).
+The deck uses an older tagline and contact details; the latest user-supplied
+exact tagline, phone, WhatsApp and email take precedence.
 
-The supplied written brief is the current design reference. The pitch deck was
-not accessible during implementation; reconcile its typography, logo, collection
-names and approved messaging before launch. Collection names and brand copy are
-provisional editorial content for review. The establishment year is 1959; the 67-year anniversary headline was supplied
-by the brand for this redesign. There are no fictional testimonials, client
-names or completed projects. All textile visuals are labeled CSS studies.
+## Structure and motion
 
-Before approved public launch: supply pitch deck, approved logo and original
-media; review collection taxonomy and copy; add verified projects; review the editable provisional
-business contact details in `src/data/site.js`; test actual WhatsApp and email delivery on target
-devices; confirm visit address/hours; decide whether a server-backed enquiry
-form is needed; add approved privacy terms and any required disclosures.
+- `src/data/site.js`: exact tagline, gold logo path, both locations, collection
+  assets, source-attributed deck selections, verified projects and film slots.
+- `src/Home.jsx`: opening, heritage, collection explorer and visit invitation.
+- `src/components/ScrollStory.jsx`: native sticky three-stage scroll sequence,
+  chapter controls, skip link and optional paused video scrubbing. Reduced motion
+  becomes a static readable chapter stack; no scroll/touch interception.
+- `src/components/PortfolioStage.jsx`: full-screen verified projects or distinctly
+  attributed deck selections. Reuses the keyboard-accessible ProjectViewer.
+- `src/components/Media.jsx`: responsive/lazy images, posters, explicit film play,
+  off-screen pause and load-error fallback.
+- `src/hooks/useExperience.js`: observer-based reveals, rAF-batched parallax and
+  native View Transitions with ordinary-navigation fallback.
+- `src/components/Locations.jsx`: consistent branch details across home/menu/footer/contact.
+- `src/pages.jsx`: remaining page views and appointment enquiry form.
+- `public/media/README.md`: adding actual Drive originals as optimized web assets.
 
-No e-commerce, payments, analytics, public deployment or hosting is configured.
+Self-hosted fonts; no animation framework or forced media autoplay. Decorative
+cursor is desktop-only and keeps the native cursor. Reduced motion removes
+parallax, text reveals, cursor effects and route-transition animation.
 
-Provisional contact configuration: WhatsApp +91 89770 30636; phone +91 89776
-30636; gvkdecor@gmail.com; Road No. 39, Jubilee Hills, Hyderabad. These are
-editable in `src/data/site.js`; environment variables can override email/WhatsApp.
+## Editable contact details
 
-## Cinematic redesign
+- GVK Decor Experience Centre — Road No. 39, Jubilee Hills, Hyderabad
+- GVK Decor Store — Secunderabad, Hyderabad
+- Phone: +91 89776 30636
+- WhatsApp: +91 89770 30636
+- Enquiry email: gvkdecor@gmail.com
 
-The homepage headline is the approved **67 Years of Craft. Infinite Possibilities.**
-This anniversary copy is specific to 2026 and should be reviewed in future years.
-Seven collections reflect the supplied positioning: curtains, blinds, wallpapers,
-upholstery, bedding, headboards, and custom furnishings.
+Edit `src/data/site.js`. Public email and WhatsApp overrides are supported via
+VITE_APPOINTMENT_EMAIL and VITE_WHATSAPP_NUMBER in .env.local (see .env.example).
+Never put secrets in browser-exposed VITE variables.
 
-- `src/Home.jsx`: five-chapter narrative, interactive material and collection selectors.
-- `src/hooks/useExperience.js`: shared IntersectionObserver reveals and passive,
-  requestAnimationFrame-batched parallax. No scroll hijacking or animation dependency.
-- `src/components/Cursor.jsx`: optional desktop pointer accent; keeps the native cursor.
-- `src/components/ProjectViewer.jsx`: fullscreen, keyboard-accessible project viewer
-  with image navigation, Escape dismissal, focus restoration and scroll locking.
-- Page transitions use the native View Transitions API where available; other
-  browsers navigate normally. Reduced-motion preferences disable reveals, parallax,
-  page transition effects and the decorative cursor. Motion preference changes
-  are respected during a visit.
-
-Media are not downloaded until needed. Hero images use eager/high-priority loading;
-other images are lazy, can use srcSet/sizes, and reserve space in fixed aspect layouts.
-Videos use preload=none and explicit play controls rather than forced autoplay,
-including on mobile. Cinematic films pause off-screen. Fonts are self-hosted.
-
-All previews still use clearly disclosed abstract CSS studies; none are presented
-as photographs of completed projects. The two external creative-reference sites
-could not be inspected because of network-policy denials; the supplied written
-creative direction informed this original design.
-
-Browser tests cover all six pages, 320px layouts, menu keyboard behaviour,
-collection/craft exploration, reduced motion, appointment-email preparation and
-the full-screen viewer. Gallery tests inject a test-only fixture into browser
-responses; the production projects array remains empty.
+The appointment enquiry form retains required fields and consent, adds branch
+selection, and prepares a reviewable mailto link. It does not store data or
+send email automatically, and does not confirm bookings. Test real mail-app
+and WhatsApp handoff on target Windows/mobile devices before approved launch.

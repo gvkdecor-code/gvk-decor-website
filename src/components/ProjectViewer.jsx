@@ -36,7 +36,7 @@ export default function ProjectViewer({ project, onClose }) {
         onClick={onClose}
         aria-label="Close project"
       >
-        Close <X size={20} />
+        Close <X aria-hidden="true" size={20} />
       </button>
       <div className="viewer-stage" key={index}>
         {slides[index] && <Media item={slides[index]} priority />}
@@ -55,7 +55,7 @@ export default function ProjectViewer({ project, onClose }) {
             disabled={slides.length < 2}
             aria-label="Previous image"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft aria-hidden="true" size={20} />
           </button>
           <span aria-live="polite">
             {index + 1} / {slides.length}
@@ -65,7 +65,7 @@ export default function ProjectViewer({ project, onClose }) {
             disabled={slides.length < 2}
             aria-label="Next image"
           >
-            <ArrowRight size={20} />
+            <ArrowRight aria-hidden="true" size={20} />
           </button>
         </div>
       </div>

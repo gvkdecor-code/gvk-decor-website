@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowDown, ArrowUpRight, ArrowRight, Plus } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import Media from "./components/Media";
 import { Enquire } from "./components/Layout";
-import { collections, heroMedia, craftStudies, projects } from "./data/site";
+import { brand, collections, heroMedia } from "./data/site";
+import ScrollStory from "./components/ScrollStory";
+import PortfolioStage from "./components/PortfolioStage";
+import Locations from "./components/Locations";
 
 function CollectionExplorer() {
   const [active, setActive] = useState(0);
@@ -29,7 +32,7 @@ function CollectionExplorer() {
           >
             <span className="index">0{i + 1}</span>
             <span>{c.name}</span>
-            <ArrowUpRight size={19} />
+            <ArrowUpRight aria-hidden="true" size={19} />
           </button>
         ))}
       </div>
@@ -53,7 +56,7 @@ function CollectionExplorer() {
             className="round-link"
             aria-label={`Discover ${item.name}`}
           >
-            <ArrowUpRight size={22} />
+            <ArrowUpRight aria-hidden="true" size={22} />
           </Link>
         </div>
       </div>
@@ -61,9 +64,8 @@ function CollectionExplorer() {
   );
 }
 export default function Home() {
-  const [craft, setCraft] = useState(0);
   useEffect(() => {
-    document.title = "GVK Decor — 67 Years of Craft. Infinite Possibilities.";
+    document.title = `GVK Decor — ${brand.tagline}`;
   }, []);
   return (
     <>
@@ -79,31 +81,28 @@ export default function Home() {
         <div className="hero-shade" aria-hidden="true" />
         <div className="hero-topline">
           <span>BESPOKE FURNISHINGS</span>
-          <span>JUBILEE HILLS, HYDERABAD</span>
+          <span>JUBILEE HILLS / SECUNDERABAD</span>
         </div>
         <div className="hero-content">
-          <p className="eyebrow hero-enter">A LEGACY, STILL UNFOLDING.</p>
-          <h1
-            id="hero-title"
-            aria-label="67 Years of Craft. Infinite Possibilities."
-          >
+          <p className="eyebrow hero-enter">GVK DECOR / BESPOKE FURNISHINGS</p>
+          <h1 id="hero-title" aria-label={brand.tagline}>
             <span className="hero-line">
-              <span>67 Years of Craft.</span>
+              <span>Crafting Timeless</span>
             </span>
             <span className="hero-line">
-              <em>Infinite Possibilities.</em>
+              <em>Spaces Since 1959</em>
             </span>
           </h1>
           <div className="hero-description hero-enter">
             <p>
-              Some spaces are furnished.
+              Curtains. Blinds. Wallpapers.
               <br />
-              Others are felt.
+              Upholstery. Bedding. Bespoke.
             </p>
             <Link className="hero-explore" to="/collections">
               Explore the world of GVK{" "}
               <span>
-                <ArrowUpRight size={21} />
+                <ArrowUpRight aria-hidden="true" size={21} />
               </span>
             </Link>
           </div>
@@ -115,15 +114,25 @@ export default function Home() {
             Original GVK Decor film to follow
           </p>
         )}
+        {heroMedia.source && (
+          <p className="hero-media-credit">
+            {heroMedia.source} · opening film pending
+          </p>
+        )}
         <div className="hero-bottom">
           <a href="#heritage" className="scroll-cue">
             <span className="scroll-track" />
             <span>SCROLL TO DISCOVER</span>
-            <ArrowDown size={13} />
+            <ArrowDown aria-hidden="true" size={13} />
           </a>
           <span className="hero-edition">A CONSIDERED LIFE / EST. 1959</span>
         </div>
       </section>
+      {!brand.goldLogo && (
+        <p className="brand-preview-note">
+          Design preview · official gold logo and original film pending review
+        </p>
+      )}
       <section className="heritage-chapter section" id="heritage" data-story>
         <div className="chapter-head" data-reveal>
           <p className="eyebrow">01 / AN ENDURING SENSIBILITY</p>
@@ -141,12 +150,13 @@ export default function Home() {
               <em>stays with you.</em>
             </h2>
             <p>
-              For 67 years, GVK Decor has been part of the conversation around
-              beautiful homes. Rooted in Hyderabad. Drawn to the extraordinary
-              in the everyday.
+              Founded in 1959 by Gunda Venkateshwar Rao. GVK Decor brings
+              curtains, blinds, wallpapers, upholstery, bedding, headboards and
+              custom furnishings to homes in Hyderabad. Visit the Experience
+              Centre in Jubilee Hills or our store in Secunderabad.
             </p>
             <Link to="/our-legacy" className="text-link">
-              Discover our legacy <ArrowUpRight size={17} />
+              Discover our legacy <ArrowUpRight aria-hidden="true" size={17} />
             </Link>
           </div>
         </div>
@@ -156,118 +166,41 @@ export default function Home() {
           <em>How it makes you feel.</em>
         </p>
       </section>
-      <section className="craft-chapter" id="craft">
-        <div className="craft-chapter-heading section" data-reveal>
-          <p className="eyebrow">02 / THE QUIET PURSUIT OF EXTRAORDINARY</p>
-          <h2>
-            Look closer.
-            <br />
-            <em>Feel the difference.</em>
-          </h2>
-          <p>
-            In a thread. In a fold. In the details that bring everything
-            together.
-          </p>
-        </div>
-        <div className="craft-stage">
-          <div className="craft-media" key={craft} data-parallax>
-            <Media
-              item={craftStudies[craft]}
-              cinematic
-              label="MACRO MATERIAL STUDY — ORIGINAL CRAFT PHOTOGRAPHY TO FOLLOW"
-            />
-          </div>
-          <div className="craft-vignette" />
-          <div className="craft-stage-copy">
-            <p className="eyebrow">THE ANATOMY OF A FEELING</p>
-            <h3 key={craft}>{craftStudies[craft].title}</h3>
-            <p>{craftStudies[craft].detail}</p>
-            <Link to="/behind-the-craft" className="text-link">
-              Behind the craft <ArrowUpRight size={17} />
-            </Link>
-          </div>
-          {!craftStudies[craft].image && !craftStudies[craft].video && (
-            <p className="craft-disclosure">
-              Macro material study · original craft photography to follow
-            </p>
-          )}
-          <div className="craft-controls" aria-label="Explore craftsmanship">
-            {craftStudies.map((s, i) => (
-              <button
-                key={s.title}
-                aria-pressed={craft === i}
-                onClick={() => setCraft(i)}
-              >
-                <span>0{i + 1}</span>
-                {s.title}
-                <Plus size={15} />
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ScrollStory />
       <CollectionExplorer />
-      <section className="selected-chapter" id="selected-projects">
-        <div className="selected-backdrop" data-parallax>
-          <Media
-            item={projects[0]?.media[0] || { tone: "architecture" }}
-            label={
-              projects.length
-                ? undefined
-                : "SPATIAL STUDY — NOT A COMPLETED GVK DECOR PROJECT"
-            }
-          />
-        </div>
-        <div className="selected-shade" />
-        <div className="selected-top">
-          <p className="eyebrow">04 / SPACES WITH A STORY</p>
-          <span>THE PROJECT JOURNAL</span>
-        </div>
-        <div className="selected-copy" data-reveal>
-          <h2>
-            Distinctly personal.
-            <br />
-            <em>Beautifully lived.</em>
-          </h2>
-          <p>
-            {projects.length
-              ? "Explore original GVK Decor projects and the details that bring each space to life."
-              : "Our project journal is being prepared with original GVK Decor photography. A closer look at real spaces, coming soon."}
-          </p>
-          <Link to="/projects" className="text-link">
-            Explore the project journal <ArrowUpRight size={17} />
-          </Link>
-        </div>
-        {!projects.length && (
-          <p className="selected-disclosure">
-            Spatial study · not a completed GVK Decor project
-          </p>
-        )}
-        <span className="selected-side">
-          ARCHITECTURE / TEXTURE / ATMOSPHERE
-        </span>
-      </section>
+      <PortfolioStage />
       <section className="philosophy-chapter section">
         <p className="eyebrow" data-reveal>
           05 / THE GVK DECOR PHILOSOPHY
         </p>
         <h2 data-reveal>
-          A beautiful home
+          From window to wall.
           <br />
-          doesn’t follow a formula.
+          From upholstery to bedding.
           <br />
-          <em>It follows you.</em>
+          <em>A home, considered together.</em>
         </h2>
         <div className="philosophy-foot" data-reveal>
           <span className="philosophy-mark" aria-hidden="true">
             G.
           </span>
           <p>
-            Your rituals. Your point of view. Your sense of belonging. We bring
-            materials, craft and considered choices together, to create a home
-            that feels entirely yours.
+            Bring your room dimensions, material references or your architect’s
+            plans. Discuss curtains, blinds, upholstery and custom furnishings
+            with GVK Decor at the Jubilee Hills Experience Centre.
           </p>
           <Enquire>Let’s find your expression</Enquire>
+        </div>
+      </section>
+      <section className="home-locations section">
+        <div data-reveal>
+          <p className="eyebrow">TWO LOCATIONS / HYDERABAD</p>
+          <h2>Meet GVK Decor.</h2>
+          <p>{brand.tagline}</p>
+        </div>
+        <div data-reveal>
+          <Locations />
+          <Enquire>Enquire about a visit</Enquire>
         </div>
       </section>
     </>

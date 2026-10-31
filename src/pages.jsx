@@ -6,7 +6,16 @@ import { Enquire } from "./components/Layout";
 import ProjectViewer from "./components/ProjectViewer";
 import Home from "./Home";
 export { Home };
-import { collections, projects, brandFilm, contact } from "./data/site";
+import Locations from "./components/Locations";
+import {
+  brand,
+  deckSelections,
+  locations,
+  collections,
+  projects,
+  brandFilm,
+  contact,
+} from "./data/site";
 function Title({ title, children, eyebrow }) {
   useEffect(() => {
     document.title = `${title} — GVK Decor`;
@@ -26,8 +35,8 @@ export function Legacy() {
         title="A legacy, thoughtfully woven."
         eyebrow="Our Legacy · Established 1959"
       >
-        Rooted in Hyderabad. Shaped by a lasting appreciation for beautiful
-        homes.
+        {brand.tagline}. Visit GVK Decor in Jubilee Hills and Secunderabad,
+        Hyderabad.
       </Title>
       <section className="legacy-banner">
         <div className="legacy-number">
@@ -36,14 +45,15 @@ export function Legacy() {
         <div>
           <p className="eyebrow">GVK DECOR</p>
           <h2>
-            A sense of home.
+            Gunda Venkateshwar Rao.
             <br />
-            <em>Across generations.</em>
+            <em>The name behind GVK.</em>
           </h2>
           <p>
-            Established in 1959, GVK Decor is a bespoke home furnishings brand
-            in Jubilee Hills, Hyderabad. Our point of view brings heritage into
-            conversation with the way we live today.
+            Established in 1959, GVK Decor specialises in designer curtains,
+            blinds, wallpapers, upholstery, bedding, headboards and exclusive
+            custom furnishings. Our Hyderabad locations are the Jubilee Hills
+            Experience Centre and the Secunderabad store.
           </p>
         </div>
       </section>
@@ -56,9 +66,10 @@ export function Legacy() {
             <em>Lasting meaning.</em>
           </h2>
           <p className="wide-copy">
-            A well-considered home reveals itself slowly: in materials you
-            return to, details you notice with time, and spaces that make you
-            feel at ease. This is the spirit we bring to every conversation.
+            Consider curtains with upholstery, wallpapers with bedding, and
+            headboards with the furnishings around them. Bring your plans or
+            material references to the Experience Centre to discuss your space
+            with GVK Decor.
           </p>
           <Enquire />
         </div>
@@ -95,14 +106,15 @@ export function Collections() {
   return (
     <>
       <Title title="A language of texture." eyebrow="The Collections">
-        Discover the layers that bring a room to life. A starting point for a
-        conversation, always tailored to your space.
+        Explore designer curtains, blinds, wallpapers, upholstery, bedding,
+        headboards and exclusive custom furnishings. Enquire about materials for
+        your project.
       </Title>
       <div className="collection-tabs">
         {collections.map((c) => (
           <a key={c.id} href={`#${c.id}`}>
             {c.name}
-            <ArrowDown size={13} />
+            <ArrowDown aria-hidden="true" size={13} />
           </a>
         ))}
       </div>
@@ -133,14 +145,20 @@ export function Collections() {
 export function Projects() {
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState(null);
-  const items = projects.filter(
+  const verified = projects.filter(
     (p) => filter === "All" || p.category === filter,
   );
+  const items = verified.length
+    ? verified
+    : filter === "All"
+      ? deckSelections
+      : [];
   return (
     <>
       <Title title="Spaces with a story." eyebrow="The Project Journal">
-        A closer look at completed spaces, thoughtful collaborations and the
-        details that make each home its own.
+        Explore photographs from the supplied GVK Decor pitch deck. These are
+        descriptive image selections; project names, locations and credits are
+        awaiting confirmation.
       </Title>
       <section className="section projects">
         <div className="filters" aria-label="Filter projects">
@@ -228,16 +246,18 @@ export function Craft() {
         title="The details make the difference."
         eyebrow="Behind the Craft"
       >
-        A thoughtful process. A tactile sensibility. An appreciation for the
-        things you feel as much as see.
+        From the movement of a curtain to upholstery and finishing details. The
+        supplied pitch deck shows makers working by hand on figurative textiles.
+        Explore those workshop details while original craft films are being
+        prepared.
       </Title>
       <section className="craft-film section">
         <Media
           item={brandFilm}
-          label="Craft film coming soon · abstract material study"
+          label="Workshop photography · GVK Decor pitch deck, page 4"
         />
         <div className="film-caption">
-          <span>A CLOSER LOOK AT GVK DECOR</span>
+          <span>WORKSHOP PHOTOGRAPHY / PITCH DECK PAGE 4</span>
           <span>Texture / Proportion / Finish</span>
         </div>
       </section>
@@ -261,7 +281,11 @@ export function Craft() {
               >
                 <span className="index">0{i + 1}</span>
                 <h3>{title}</h3>
-                {expanded === i ? <Minus size={16} /> : <Plus size={16} />}
+                {expanded === i ? (
+                  <Minus aria-hidden="true" size={16} />
+                ) : (
+                  <Plus aria-hidden="true" size={16} />
+                )}
               </button>
               <div id={`step-${i}`} hidden={expanded !== i}>
                 <p>{desc}</p>
@@ -285,9 +309,9 @@ export function Contact() {
       );
       return;
     }
-    const body = `Name: ${data.get("name")}\nEmail: ${data.get("email")}\nPhone: ${data.get("phone")}\nI am: ${data.get("role")}\nPreferred date: ${data.get("date") || "To be discussed"}\n\n${data.get("message")}`;
+    const body = `Name: ${data.get("name")}\nEmail: ${data.get("email")}\nPhone: ${data.get("phone")}\nI am: ${data.get("role")}\nVisit location: ${data.get("location")}\nPreferred date: ${data.get("date") || "To be discussed"}\n\n${data.get("message")}`;
     setEmailLink(
-      `mailto:${contact.email}?subject=${encodeURIComponent("GVK Decor Experience Centre appointment enquiry")}&body=${encodeURIComponent(body)}`,
+      `mailto:${contact.email}?subject=${encodeURIComponent("GVK Decor appointment enquiry")}&body=${encodeURIComponent(body)}`,
     );
     setStatus(
       "Your request is prepared. Open your email app below, then send the email to complete your enquiry. Your appointment is subject to confirmation.",
@@ -307,21 +331,13 @@ export function Contact() {
             <br />
             <em>Since 1959.</em>
           </h2>
-          <p>
-            GVK Decor
-            <br />
-            {contact.venue}
-            <br />
-            {contact.address}
-            <br />
-            Telangana, India
-          </p>
+          <Locations />
           <a
             className="text-link"
             href={`tel:${contact.phone.replace(/\s/g, "")}`}
           >
             {contact.phone}
-            <ArrowUpRight size={16} />
+            <ArrowUpRight aria-hidden="true" size={16} />
           </a>
           <p className="note">
             Please arrange an appointment for visit details and availability.
@@ -329,7 +345,7 @@ export function Contact() {
           {contact.email && (
             <a className="text-link" href={`mailto:${contact.email}`}>
               {contact.email}
-              <ArrowUpRight size={16} />
+              <ArrowUpRight aria-hidden="true" size={16} />
             </a>
           )}
           {contact.whatsapp && (
@@ -340,7 +356,7 @@ export function Contact() {
               rel="noopener noreferrer"
             >
               Talk to us on WhatsApp
-              <ArrowUpRight size={16} />
+              <ArrowUpRight aria-hidden="true" size={16} />
             </a>
           )}
           <div className="contact-note">
@@ -356,8 +372,9 @@ export function Contact() {
           <p className="eyebrow">A CONVERSATION IS THE FIRST STEP</p>
           <h2>Request an appointment</h2>
           <p>
-            Visit our Jubilee Hills Experience Centre, Road No. 39, Hyderabad.
-            Share a few details to enquire about an appointment.
+            Request a visit to the Experience Centre on Road No. 39, Jubilee
+            Hills, or enquire about our Secunderabad store. Select your location
+            below.
           </p>
           {!contact.email && (
             <p className="form-notice" role="note">
@@ -414,6 +431,16 @@ export function Contact() {
               </label>
             </div>
             <label>
+              Visit location
+              <select name="location" defaultValue={locations[0].name}>
+                {locations.map((location) => (
+                  <option key={location.id} value={location.name}>
+                    {location.name} — {location.address}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
               Preferred appointment date
               <input
                 name="date"
@@ -441,14 +468,16 @@ export function Contact() {
               separate steps.
             </p>
             <button className="button" type="submit" disabled={!contact.email}>
-              Prepare appointment email <ArrowUpRight size={16} />
+              Prepare appointment email{" "}
+              <ArrowUpRight aria-hidden="true" size={16} />
             </button>
             <p role="status" className="form-status">
               {status}
             </p>
             {emailLink && (
               <a className="text-link" href={emailLink}>
-                Open appointment email <ArrowUpRight size={16} />
+                Open appointment email{" "}
+                <ArrowUpRight aria-hidden="true" size={16} />
               </a>
             )}
           </form>
@@ -465,7 +494,7 @@ export function NotFound() {
       </Title>
       <div className="section">
         <Link className="text-link" to="/">
-          Return home <ArrowRight size={18} />
+          Return home <ArrowRight aria-hidden="true" size={18} />
         </Link>
       </div>
     </>

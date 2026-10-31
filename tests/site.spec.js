@@ -5,7 +5,7 @@ test("six pages render without errors or horizontal overflow", async ({
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   for (const [path, title] of [
-    ["/", "67 Years of Craft."],
+    ["/", "Crafting Timeless"],
     ["/our-legacy", "A legacy"],
     ["/collections", "A language"],
     ["/projects", "Spaces with"],
@@ -70,6 +70,7 @@ test("project filters stay honest, craft accordion works, appointment form prepa
   await page
     .getByLabel("A little about your project")
     .fill("Curtains for our home.");
+  await page.getByLabel("Visit location").selectOption("GVK Decor Store");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Prepare appointment email" }).click();
   await expect(page.getByRole("status")).toContainText(
@@ -77,7 +78,10 @@ test("project filters stay honest, craft accordion works, appointment form prepa
   );
   await expect(
     page.getByRole("link", { name: "Open appointment email" }),
-  ).toHaveAttribute("href", /mailto:gvkdecor@gmail.com.*visitor%40example.com/);
+  ).toHaveAttribute(
+    "href",
+    /mailto:gvkdecor@gmail.com.*visitor%40example.com.*GVK%20Decor%20Store/,
+  );
 });
 
 test("small phones remain within the viewport after fonts load", async ({
@@ -100,11 +104,9 @@ test("cinematic chapters respond to exploration without inventing projects", asy
 }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
-    "67 Years of Craft. Infinite Possibilities.",
+    "Crafting Timeless Spaces Since 1959",
   );
-  await expect(page.locator(".hero-disclosure")).toContainText(
-    "Abstract textile study",
-  );
+  await expect(page.locator(".hero-media-credit")).toContainText("pitch deck");
   await page.getByRole("button", { name: /Designer blinds/ }).click();
   await expect(
     page.getByRole("button", { name: /Designer blinds/ }),
@@ -115,10 +117,14 @@ test("cinematic chapters respond to exploration without inventing projects", asy
   await expect(
     page.getByRole("link", { name: "Discover Designer blinds" }),
   ).toHaveAttribute("href", "/collections#blinds");
-  await page.getByRole("button", { name: /The detail/ }).click();
-  await expect(page.locator(".craft-stage-copy h3")).toHaveText("The detail.");
-  await expect(page.locator(".selected-disclosure")).toContainText(
-    "not a completed GVK Decor project",
+  await page.getByRole("button", { name: /Texture, layered/ }).click();
+  await expect(page.locator(".scroll-story")).toHaveAttribute(
+    "data-active",
+    "1",
+  );
+  await expect(page.locator(".portfolio-screen")).toHaveCount(3);
+  await expect(page.locator(".portfolio-screen").first()).toContainText(
+    "Pitch-deck selection",
   );
 });
 
@@ -236,7 +242,7 @@ test("cinematic film requires play, pauses off-screen and respects motion change
   await expect(film).toHaveJSProperty("paused", true);
   await page.getByRole("button", { name: "Play film" }).click();
   await expect(film).toHaveJSProperty("paused", false);
-  await page.locator(".craft-chapter-heading").scrollIntoViewIfNeeded();
+  await page.locator(".collection-explorer").scrollIntoViewIfNeeded();
   expect(
     (await film.boundingBox()).y + (await film.boundingBox()).height,
   ).toBeLessThan(0);
@@ -246,4 +252,138 @@ test("cinematic film requires play, pauses off-screen and respects motion change
   await expect(film).toHaveJSProperty("paused", false);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(film).toHaveJSProperty("paused", true);
+});
+
+test("homepage scroll sequence changes with scroll and exposes both locations", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("h1")).toHaveAccessibleName(
+    "Crafting Timeless Spaces Since 1959",
+  );
+  await expect(page.locator("header .official-logo")).toBeVisible();
+  expect(
+    await page
+      .locator("header .official-logo")
+      .evaluate((img) => img.complete && img.naturalWidth > 0),
+  ).toBeTruthy();
+  const sequence = page.locator(".scroll-story");
+  await page.evaluate(() => {
+    const el = document.querySelector(".scroll-story");
+    window.scrollTo({
+      top:
+        el.getBoundingClientRect().top +
+        scrollY +
+        (el.offsetHeight - innerHeight) * 0.85,
+      behavior: "instant",
+    });
+  });
+  await expect(sequence).toHaveAttribute("data-active", "2");
+  await page.getByRole("button", { name: /Light, framed/ }).click();
+  await expect(sequence).toHaveAttribute("data-active", "0");
+  await page.locator(".story-skip").click();
+  await expect(page).toHaveURL(/#collections/);
+  await expect(page.locator(".home-locations")).toContainText(
+    "GVK Decor Experience Centre",
+  );
+  await expect(page.locator(".home-locations")).toContainText(
+    "Road No. 39, Jubilee Hills, Hyderabad",
+  );
+  await expect(page.locator(".home-locations")).toContainText(
+    "GVK Decor Store",
+  );
+  await expect(page.locator(".home-locations")).toContainText(
+    "Secunderabad, Hyderabad",
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+});
+
+test("reviewed deck selection opens full-screen without invented attribution", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const first = page.locator(".portfolio-screen").first();
+  await first.getByRole("button", { name: "View the deck selection" }).click();
+  const dialog = page.getByRole("dialog", { name: "Light & living" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText(
+    "Project name, location and credits are awaiting confirmation",
+  );
+  const photo = dialog.locator(".viewer-stage img");
+  await expect(photo).toBeVisible();
+  expect(
+    await photo.evaluate((img) => img.complete && img.naturalWidth > 0),
+  ).toBeTruthy();
+  await dialog.getByRole("button", { name: "Next image" }).click();
+  await expect(dialog.locator(".viewer-stage img")).toHaveAttribute(
+    "alt",
+    /Ochre armchair/,
+  );
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+});
+
+test("reduced motion renders each scroll chapter as readable static content", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator(".scroll-story")).toHaveClass(/is-reduced/);
+  await expect(page.locator(".story-frame")).toHaveCount(3);
+  for (const frame of await page.locator(".story-frame").all()) {
+    await frame.scrollIntoViewIfNeeded();
+    await expect(frame).toBeVisible();
+    await expect(frame).toHaveAttribute("aria-hidden", "false");
+  }
+  await expect(page.locator(".story-sticky")).toHaveCSS("position", "relative");
+});
+
+test("scroll film seeks to the scroll position without autoplay and falls back for reduced motion", async ({
+  page,
+}) => {
+  await page.route("**/src/data/site.js*", async (route) => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(
+      /export const sequenceFilm = \{[\s\S]*?\};/,
+      'export const sequenceFilm = {video:"/tests/fixtures/scroll-seek-test.mp4",poster:"",alt:"Test scroll film"};',
+    );
+    await route.fulfill({ response, body });
+  });
+  await page.goto("/");
+  const film = page.locator(".scroll-film");
+  await page.locator(".scroll-story").scrollIntoViewIfNeeded();
+  await expect(film).toHaveClass(/is-ready/);
+  for (const progress of [0.25, 0.8]) {
+    await page.evaluate((progress) => {
+      const el = document.querySelector(".scroll-story");
+      window.scrollTo({
+        top:
+          el.getBoundingClientRect().top +
+          scrollY +
+          (el.offsetHeight - innerHeight) * progress,
+        behavior: "instant",
+      });
+    }, progress);
+    await expect
+      .poll(() =>
+        film.evaluate((video) =>
+          Math.abs(
+            video.currentTime -
+              (video.duration - 0.08) *
+                Number(
+                  document.querySelector(".scroll-story").dataset.progress,
+                ),
+          ),
+        ),
+      )
+      .toBeLessThan(0.15);
+    await expect(film).toHaveJSProperty("paused", true);
+  }
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(film).toHaveCount(0);
+  await expect(page.locator(".story-frame")).toHaveCount(3);
 });

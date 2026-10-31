@@ -1,12 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { ArrowUpRight, Menu, X, MessageCircle } from "lucide-react";
-import { contact, navigation } from "../data/site";
+import { brand, contact, navigation } from "../data/site";
 import { useExperience, usePageTransitions } from "../hooks/useExperience";
 import Cursor from "./Cursor";
+import Locations from "./Locations";
 export function Wordmark() {
+  const [failed, setFailed] = useState(false);
+  if (brand.goldLogo && !failed)
+    return (
+      <img
+        className="official-logo"
+        src={brand.goldLogo}
+        alt="GVK Decor"
+        onError={() => setFailed(true)}
+      />
+    );
   return (
-    <span className="wordmark">
+    <span
+      className="wordmark"
+      aria-label="GVK Decor — temporary text mark, official gold logo pending"
+    >
       GVK<span>DECOR</span>
     </span>
   );
@@ -15,7 +29,7 @@ export function Enquire({ children = "Begin a conversation", className = "" }) {
   return (
     <Link className={`text-link ${className}`} to="/contact">
       {children}
-      <ArrowUpRight size={17} />
+      <ArrowUpRight aria-hidden="true" size={17} />
     </Link>
   );
 }
@@ -67,10 +81,10 @@ export default function Layout() {
         <Link to="/" aria-label="GVK Decor home">
           <Wordmark />
         </Link>
-        <span className="header-location">HYDERABAD · EST. 1959</span>
+        <span className="header-location">JUBILEE HILLS · SECUNDERABAD</span>
         <div className="header-actions">
           <Link className="header-appointment" to="/contact">
-            Book a visit <ArrowUpRight size={14} />
+            Book a visit <ArrowUpRight aria-hidden="true" size={14} />
           </Link>
           <button
             ref={trigger}
@@ -81,7 +95,7 @@ export default function Layout() {
             onClick={() => setOpen(true)}
           >
             <span>Menu</span>
-            <Menu size={19} />
+            <Menu aria-hidden="true" size={19} />
           </button>
         </div>
       </header>
@@ -105,7 +119,7 @@ export default function Layout() {
             onClick={() => setOpen(false)}
             aria-label="Close navigation"
           >
-            Close <X size={22} />
+            Close <X aria-hidden="true" size={22} />
           </button>
         </div>
         <div className="menu-layout">
@@ -119,7 +133,7 @@ export default function Layout() {
                       0{i + 1}
                     </span>
                     {title}
-                    <ArrowUpRight size={23} />
+                    <ArrowUpRight aria-hidden="true" size={23} />
                   </NavLink>
                 ),
               )}
@@ -132,11 +146,7 @@ export default function Layout() {
               <br />
               <em>possibility.</em>
             </h2>
-            <p>
-              {contact.venue}
-              <br />
-              {contact.address}
-            </p>
+            <Locations />
             <Enquire>Plan your visit</Enquire>
             <span className="menu-year">1959 — 2026</span>
           </div>
@@ -160,19 +170,15 @@ export default function Layout() {
           </div>
           <div className="footer-address">
             <Wordmark />
-            <p>
-              {contact.venue}
-              <br />
-              {contact.address}
-            </p>
+            <Locations />
             <a href={`mailto:${contact.email}`}>{contact.email}</a>
           </div>
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} GVK Decor</span>
-          <span>Bespoke furnishings. Since 1959.</span>
+          <span>{brand.tagline}</span>
           <Link to="/contact">
-            Begin a conversation <ArrowUpRight size={13} />
+            Begin a conversation <ArrowUpRight aria-hidden="true" size={13} />
           </Link>
         </div>
       </footer>
@@ -189,7 +195,7 @@ export default function Layout() {
           contact.whatsapp ? "Enquire on WhatsApp" : "Enquire with GVK Decor"
         }
       >
-        <MessageCircle size={20} />
+        <MessageCircle aria-hidden="true" size={20} />
         <span>{contact.whatsapp ? "WhatsApp" : "Enquire"}</span>
       </a>
       <Cursor />

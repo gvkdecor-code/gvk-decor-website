@@ -1,0 +1,148 @@
+{
+  "source": "GVK Decor_Pitch Deck.pdf",
+  "sha256": "5b710597648849b837466a6da8a3105c202e43c651cc942b1448e91eb31cd570",
+  "logo": {
+    "page": 1,
+    "xref": 28,
+    "alphaMask": 286,
+    "crop": [
+      134,
+      397,
+      1017,
+      743
+    ],
+    "file": "public/brand/gvk-decor-gold.png"
+  },
+  "assets": [
+    {
+      "file": "living-room.webp",
+      "sourcePage": 12,
+      "pdfImageXref": 384,
+      "crop": null,
+      "width": 1734,
+      "height": 1157,
+      "selectionReason": "Largest source photograph: warm ivory upholstery, sheer curtains and a gold-accented table.",
+      "video": false
+    },
+    {
+      "file": "curtain-detail.webp",
+      "sourcePage": 16,
+      "pdfImageXref": 112,
+      "crop": [
+        0,
+        0,
+        619,
+        963
+      ],
+      "width": 619,
+      "height": 963,
+      "selectionReason": "Portrait curtain border and fabric detail.",
+      "video": false
+    },
+    {
+      "file": "window-lounge.webp",
+      "sourcePage": 15,
+      "pdfImageXref": 108,
+      "crop": [
+        619,
+        0,
+        1527,
+        482
+      ],
+      "width": 908,
+      "height": 482,
+      "selectionReason": "Curtains, sculptural chairs and daylight in a wide room view.",
+      "video": false
+    },
+    {
+      "file": "bedroom.webp",
+      "sourcePage": 15,
+      "pdfImageXref": 108,
+      "crop": [
+        619,
+        482,
+        1527,
+        964
+      ],
+      "width": 908,
+      "height": 482,
+      "selectionReason": "Dark drapery, upholstered bed and layered bedding.",
+      "video": false
+    },
+    {
+      "file": "bed-layers.webp",
+      "sourcePage": 17,
+      "pdfImageXref": 116,
+      "crop": [
+        619,
+        0,
+        1527,
+        482
+      ],
+      "width": 908,
+      "height": 482,
+      "selectionReason": "Headboard, cushions and bedding texture.",
+      "video": false
+    },
+    {
+      "file": "curtain-sheers.webp",
+      "sourcePage": 15,
+      "pdfImageXref": 108,
+      "crop": [
+        0,
+        0,
+        619,
+        964
+      ],
+      "width": 619,
+      "height": 964,
+      "selectionReason": "Soft window light and full-height sheers.",
+      "video": false
+    },
+    {
+      "file": "upholstery-detail.webp",
+      "sourcePage": 13,
+      "pdfImageXref": 100,
+      "crop": [
+        0,
+        0,
+        633,
+        986
+      ],
+      "width": 633,
+      "height": 986,
+      "selectionReason": "An ochre armchair, layered cushions and a textured throw.",
+      "video": false
+    },
+    {
+      "file": "craft-handwork.webp",
+      "sourcePage": 4,
+      "pdfImageXref": 43,
+      "crop": null,
+      "width": 425,
+      "height": 755,
+      "selectionReason": "Close-up handwork on a figurative textile.",
+      "video": false
+    },
+    {
+      "file": "craft-workshop.webp",
+      "sourcePage": 4,
+      "pdfImageXref": 42,
+      "crop": null,
+      "width": 422,
+      "height": 739,
+      "selectionReason": "Workshop view of textile handwork.",
+      "video": false
+    },
+    {
+      "file": "craft-detail.webp",
+      "sourcePage": 4,
+      "pdfImageXref": 44,
+      "crop": null,
+      "width": 425,
+      "height": 754,
+      "selectionReason": "A painted textile detail and the maker\u2019s hand.",
+      "video": false
+    }
+  ]
+}
