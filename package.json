@@ -8,12 +8,13 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "playwright test",
-    "format": "prettier --write src tests *.js *.json index.html",
-    "format:check": "prettier --check src tests *.js *.json index.html"
+    "format": "prettier --write src tests scripts *.js *.json index.html",
+    "format:check": "prettier --check src tests scripts *.js *.json index.html"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/manrope": "^5.3.0",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.468.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

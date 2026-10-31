@@ -4,6 +4,7 @@ import { ArrowUpRight, Menu, X, MessageCircle } from "lucide-react";
 import { brand, contact, navigation } from "../data/site";
 import { useExperience, usePageTransitions } from "../hooks/useExperience";
 import Cursor from "./Cursor";
+import PreviewBadge from "./PreviewBadge";
 import Locations from "./Locations";
 export function Wordmark() {
   const [failed, setFailed] = useState(false);
@@ -199,6 +200,7 @@ export default function Layout() {
         <span>{contact.whatsapp ? "WhatsApp" : "Enquire"}</span>
       </a>
       <Cursor />
+      <PreviewBadge />
     </>
   );
 }

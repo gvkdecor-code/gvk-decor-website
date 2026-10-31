@@ -81,7 +81,7 @@ exact tagline, phone, WhatsApp and email take precedence.
 - `src/pages.jsx`: remaining page views and appointment enquiry form.
 - `public/media/README.md`: adding actual Drive originals as optimized web assets.
 
-Self-hosted fonts; no animation framework or forced media autoplay. Decorative
+Self-hosted fonts; GSAP ScrollTrigger for the cinematic sequences, with no forced media autoplay. Decorative
 cursor is desktop-only and keeps the native cursor. Reduced motion removes
 parallax, text reveals, cursor effects and route-transition animation.
 
@@ -101,3 +101,27 @@ The appointment enquiry form retains required fields and consent, adds branch
 selection, and prepares a reviewable mailto link. It does not store data or
 send email automatically, and does not confirm bookings. Test real mail-app
 and WhatsApp handoff on target Windows/mobile devices before approved launch.
+
+## GVK-CINEMA-04 redesign and the old-ZIP problem
+
+An old ZIP **does not update** when commits are pushed to GitHub. Stop the old
+server, download main again, extract to a new folder, and open START-PREVIEW.cmd.
+Look for the **GVK-CINEMA-04** badge in the local browser. The badge is dev-only
+and is omitted from production builds. See docs/WINDOWS-PREVIEW.md.
+
+GSAP + ScrollTrigger now drive the opening's expanding aperture, layered title
+movement, image zoom and horizontal furnishing rail. Full-screen portfolio panels
+overlap and reveal. The desktop cursor has contextual labels and a damped pointer
+ring. All animations have static reduced-motion layouts; normal vertical scrolling
+is preserved without intercepting wheel/touch events.
+
+The opening uses reviewed pitch-deck stills, explicitly labelled as a still-image
+sequence. The authentic-video acceptance criterion remains **blocked on media**:
+all 14 supplied Drive folders were denied by the environment proxy before any
+contents could be listed. See docs/DRIVE-ACCESS.md and the per-folder access report.
+Do not call the supplied Drive videos reviewed or the real opening film complete.
+
+The Windows launcher now checks Node version, lockfile fingerprint, port occupancy
+and folder identity; it opens a browser only after Vite reports ready. Its portable
+logic can be checked with `node scripts/preview-local.mjs --check`. Windows-specific
+execution remains to be confirmed on the user's laptop.

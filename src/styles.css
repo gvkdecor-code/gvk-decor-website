@@ -2843,3 +2843,787 @@ header.over-hero {
     left: 45%;
   }
 }
+/* Film-edit redesign: an expanding aperture, an editorial title and a moving reel. */
+.opening-experience.cinematic-hero {
+  height: 270svh;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  background: #0e120e;
+  isolation: isolate;
+}
+.opening-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 700px;
+  overflow: hidden;
+  background: #0e120e;
+}
+.opening-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  clip-path: inset(15% 5% 14% 47%);
+  overflow: hidden;
+}
+.opening-media .hero-backdrop {
+  inset: 0;
+  z-index: 0;
+  transform: none;
+  will-change: auto;
+}
+.opening-shot {
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  pointer-events: none;
+}
+.opening-shot.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.opening-shot .media {
+  height: 100%;
+}
+.opening-shot .media img {
+  object-position: center;
+}
+.opening-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(0deg, #10170c99, transparent 80%);
+}
+.opening-kicker {
+  position: absolute;
+  z-index: 3;
+  left: 5%;
+  right: 5%;
+  top: 130px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: #c2b392;
+}
+.opening-display {
+  position: absolute;
+  top: 21%;
+  left: 8%;
+  z-index: 3;
+  font-family: var(--sans);
+  font-size: clamp(100px, 11.2vw, 190px);
+  font-weight: 600;
+  line-height: 0.86;
+  letter-spacing: -0.085em;
+  color: #f4f0e5;
+  pointer-events: none;
+}
+.opening-display > span {
+  display: block;
+}
+.opening-display > span:nth-child(2) {
+  padding: 9px 0;
+}
+.opening-display em {
+  font-family: var(--serif);
+  font-size: 1.19em;
+  line-height: 0.86;
+  letter-spacing: -0.07em;
+  color: #cab68e;
+}
+.opening-display i {
+  display: inline-block;
+  font: normal 9px/1.5 var(--sans);
+  letter-spacing: 0.1em;
+  margin-left: 40px;
+  vertical-align: middle;
+  color: #c7b894;
+}
+.opening-intro {
+  position: absolute;
+  bottom: 15%;
+  left: 8%;
+  z-index: 3;
+  max-width: 360px;
+}
+.opening-intro h1 {
+  font: 16px/1.6 var(--sans);
+  letter-spacing: 0.005em;
+  color: #ddd2bd;
+}
+.opening-intro .text-link {
+  font-size: 10px;
+  margin-top: 12px;
+}
+.opening-after {
+  position: absolute;
+  left: 8%;
+  bottom: 22%;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+.opening-after h2 {
+  font-size: clamp(60px, 8vw, 135px);
+  color: #f5efe2;
+}
+.opening-after .eyebrow {
+  color: #e5d4b1;
+}
+.opening-after em {
+  color: #d9c6a0;
+}
+.opening-after .text-link {
+  margin-top: 25px;
+  pointer-events: auto;
+  color: #f6eedc;
+}
+.opening-bottom {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 33px;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+}
+.opening-scroll {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  min-height: 44px;
+}
+.opening-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.opening-controls button {
+  background: transparent;
+  color: #a9aa99;
+  border: 0;
+  border-bottom: 1px solid #ae9e7766;
+  min-width: 42px;
+  min-height: 44px;
+  font-size: 9px;
+  padding: 10px;
+}
+.opening-controls button[aria-pressed="true"] {
+  color: #f2e4c9;
+  border-color: #e6c891;
+}
+.opening-controls .sequence-play {
+  display: grid;
+  place-items: center;
+  border: 1px solid #b3a28066;
+  border-radius: 50%;
+  margin-left: 15px;
+}
+.opening-sticky .hero-media-credit {
+  bottom: 97px;
+  right: 5%;
+  font-size: 7px;
+  z-index: 4;
+  background: #11190cb0;
+}
+.opening-sticky .film-control {
+  bottom: 130px;
+  z-index: 3;
+  right: 7%;
+  pointer-events: auto;
+}
+.opening-sticky .hero-backdrop .media-label {
+  display: none;
+}
+/* Heritage is a quiet intermission rather than a repeat of the opening layout. */
+.heritage-chapter {
+  background: #eae4d7;
+  padding-top: 90px;
+  padding-bottom: 85px;
+}
+.heritage-chapter .heritage-date {
+  font-size: clamp(140px, 21vw, 330px);
+  color: #8d7551;
+}
+.heritage-chapter .heritage-words h2 {
+  font-size: clamp(45px, 4.8vw, 75px);
+}
+.heritage-chapter .heritage-story {
+  padding-top: 90px;
+  padding-bottom: 55px;
+}
+.heritage-chapter .story-statement {
+  font-size: clamp(40px, 4.6vw, 70px);
+}
+/* Collection rail moves sideways as the visitor scrolls normally down the page. */
+.collection-voyage {
+  position: relative;
+  height: 430svh;
+  background: #f0ece3;
+}
+.voyage-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 780px;
+  overflow: hidden;
+}
+.voyage-heading {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 125px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 35px;
+}
+.voyage-heading h2 {
+  font-size: clamp(48px, 5vw, 77px);
+}
+.voyage-heading .eyebrow {
+  margin-bottom: 12px;
+}
+.voyage-current {
+  text-align: right;
+  padding-bottom: 5px;
+}
+.voyage-current > span {
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+}
+.voyage-current p {
+  font-size: 11px;
+  margin-top: 10px;
+}
+.voyage-track {
+  position: absolute;
+  display: flex;
+  gap: 45px;
+  top: 285px;
+  left: 0;
+  width: max-content;
+  padding: 0 7vw;
+}
+.voyage-card {
+  width: 45vw;
+  max-width: 780px;
+  flex-shrink: 0;
+}
+.voyage-image {
+  height: clamp(280px, 43svh, 550px);
+  position: relative;
+  overflow: hidden;
+}
+.voyage-image .media {
+  height: 100%;
+}
+.voyage-image .textile {
+  transition: transform 1.3s;
+}
+.voyage-card.is-active .textile {
+  transform: scale(1.045);
+}
+.voyage-image img {
+  transition: transform 1.3s;
+}
+.voyage-card:hover img {
+  transform: scale(1.045);
+}
+.voyage-number {
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  font: 55px var(--serif);
+  color: #f0e8d7;
+  text-shadow: 0 2px 20px #0005;
+}
+.voyage-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  padding-top: 22px;
+}
+.voyage-caption .eyebrow {
+  margin-bottom: 7px;
+  font-size: 8px;
+}
+.voyage-caption h3 {
+  font-size: 34px;
+}
+.voyage-selector.collection-selector {
+  position: absolute;
+  bottom: 35px;
+  left: 7%;
+  right: 7%;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+}
+.voyage-selector.collection-selector button {
+  flex: 1;
+  width: auto;
+  min-height: 44px;
+  padding: 13px 0;
+  gap: 8px;
+  font-size: 8px;
+}
+.voyage-selector.collection-selector button > span:nth-child(2) {
+  font: 9px/1.5 var(--sans);
+}
+.voyage-selector.collection-selector button[aria-pressed="true"] {
+  padding-left: 0;
+}
+/* Full-screen projects overlap as film frames; imagery opens from an inset. */
+.portfolio-stage {
+  position: relative;
+  background: #10160f;
+}
+.portfolio-screen {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 760px;
+}
+.portfolio-copy h2 {
+  font-family: var(--sans);
+  font-size: clamp(55px, 8vw, 125px);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.96;
+}
+.portfolio-copy p:not(.eyebrow) {
+  max-width: 390px;
+}
+.portfolio-top {
+  top: 125px;
+}
+.portfolio-background {
+  inset: 0;
+  will-change: transform, clip-path;
+}
+.philosophy-chapter {
+  background: #121a13;
+  color: #eee5d1;
+  padding-top: 130px;
+  padding-bottom: 115px;
+}
+.philosophy-chapter h2 {
+  font-size: clamp(45px, 5.6vw, 85px);
+}
+.philosophy-chapter .philosophy-foot {
+  border-color: #c6b38344;
+}
+.philosophy-chapter .philosophy-foot p {
+  color: #bdbbae;
+}
+/* Context cursor keeps the regular pointer outside media and restores it for inputs. */
+.cursor-aura span {
+  width: 12px;
+  height: 12px;
+  border-color: #d3bd8b;
+  background: #bba98744;
+  display: grid;
+  place-items: center;
+}
+.cursor-aura span b {
+  font: 8px var(--sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff6dd;
+  font-weight: 400;
+}
+.cursor-aura.cursor-context span {
+  width: 88px;
+  height: 88px;
+  background: #1f281b44;
+  backdrop-filter: blur(3px);
+}
+.cursor-aura.is-link span {
+  width: 42px;
+  height: 42px;
+  background: #a18c5c55;
+}
+.cursor-aura.is-link span b {
+  font-size: 23px;
+}
+.cursor-aura span i {
+  position: absolute;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  border: 1px dashed #ccb17a66;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cursor-aura.cursor-context span i {
+  opacity: 1;
+  animation: cursor-orbit 18s linear infinite;
+}
+@keyframes cursor-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cursor-enabled [data-cursor] {
+    cursor: none;
+  }
+  .cursor-enabled [data-cursor] a,
+  .cursor-enabled [data-cursor] button {
+    cursor: pointer;
+  }
+}
+@media (max-width: 1100px) {
+  .opening-display {
+    font-size: 12vw;
+    top: 24%;
+  }
+  .opening-intro {
+    max-width: 330px;
+  }
+  .voyage-current {
+    max-width: 200px;
+  }
+  .voyage-selector.collection-selector {
+    gap: 10px;
+  }
+}
+@media (max-width: 760px) {
+  .opening-experience.cinematic-hero {
+    height: 240svh;
+  }
+  .opening-sticky {
+    min-height: 700px;
+  }
+  .opening-kicker {
+    top: 115px;
+    font-size: 6px;
+  }
+  .opening-media {
+    clip-path: inset(20% 0% 23% 24%);
+  }
+  .opening-display {
+    top: 27%;
+    left: 7%;
+    font-size: 17.5vw;
+    line-height: 0.93;
+  }
+  .opening-display i {
+    font-size: 7px;
+    margin-left: 18px;
+  }
+  .opening-intro {
+    left: 7%;
+    right: 7%;
+    bottom: 17%;
+    max-width: 280px;
+  }
+  .opening-intro h1 {
+    font-size: 12px;
+    max-width: 230px;
+  }
+  .opening-intro .text-link {
+    font-size: 9px;
+    margin-top: 6px;
+  }
+  .opening-after {
+    left: 7%;
+    right: 7%;
+    bottom: 29%;
+  }
+  .opening-after h2 {
+    font-size: 65px;
+  }
+  .opening-after .eyebrow {
+    font-size: 7px;
+    max-width: 250px;
+  }
+  .opening-bottom {
+    bottom: 25px;
+    left: 7%;
+    right: 7%;
+    gap: 10px;
+  }
+  .opening-scroll {
+    font-size: 6px;
+    gap: 12px;
+  }
+  .opening-controls {
+    gap: 0;
+  }
+  .opening-controls button {
+    min-width: 34px;
+    padding: 10px 7px;
+    font-size: 8px;
+  }
+  .opening-controls .sequence-play {
+    margin-left: 8px;
+  }
+  .opening-sticky .hero-media-credit {
+    bottom: 95px;
+    right: 7%;
+    max-width: 190px;
+    font-size: 6px;
+  }
+  .heritage-chapter .heritage-date {
+    font-size: 45vw;
+  }
+  .heritage-chapter .heritage-story {
+    gap: 45px;
+    padding-top: 65px;
+  }
+  .heritage-chapter .heritage-words h2 {
+    font-size: 48px;
+  }
+  .heritage-chapter .story-statement {
+    font-size: 36px;
+  }
+  .collection-voyage {
+    height: 400svh;
+  }
+  .voyage-sticky {
+    min-height: 740px;
+  }
+  .voyage-heading {
+    top: 110px;
+    left: 7%;
+    right: 7%;
+    align-items: start;
+  }
+  .voyage-heading h2 {
+    font-size: 44px;
+    max-width: 240px;
+  }
+  .voyage-heading .eyebrow {
+    font-size: 6px;
+    max-width: 180px;
+  }
+  .voyage-current {
+    max-width: 85px;
+    padding-top: 5px;
+  }
+  .voyage-current p {
+    font-size: 8px;
+    line-height: 1.7;
+  }
+  .voyage-current > span {
+    font-size: 7px;
+  }
+  .voyage-track {
+    top: 235px;
+    gap: 22px;
+  }
+  .voyage-card {
+    width: 82vw;
+  }
+  .voyage-image {
+    height: min(38svh, 340px);
+    min-height: 250px;
+  }
+  .voyage-caption {
+    padding-top: 18px;
+    gap: 15px;
+  }
+  .voyage-caption h3 {
+    font-size: 28px;
+  }
+  .voyage-caption .eyebrow {
+    font-size: 7px;
+  }
+  .voyage-caption .round-link {
+    width: 43px;
+    height: 43px;
+  }
+  .voyage-number {
+    font-size: 40px;
+    right: 18px;
+    top: 18px;
+  }
+  .voyage-selector.collection-selector {
+    gap: 9px;
+    bottom: 28px;
+  }
+  .voyage-selector.collection-selector button {
+    justify-content: center;
+  }
+  .voyage-selector.collection-selector button > span:nth-child(2) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .voyage-selector .index {
+    font-size: 10px;
+  }
+  .portfolio-copy h2 {
+    font-size: 64px;
+  }
+  .philosophy-chapter h2 {
+    font-size: 41px;
+  }
+}
+@media (max-height: 750px) and (min-width: 761px) {
+  .opening-sticky {
+    min-height: 100svh;
+  }
+  .opening-display {
+    font-size: 9vw;
+    top: 25%;
+  }
+  .opening-intro {
+    bottom: 15%;
+  }
+  .voyage-sticky {
+    min-height: 100svh;
+  }
+  .voyage-heading {
+    top: 110px;
+  }
+  .voyage-heading h2 {
+    font-size: 52px;
+  }
+  .voyage-track {
+    top: 225px;
+  }
+  .voyage-image {
+    height: 33svh;
+  }
+  .voyage-caption h3 {
+    font-size: 26px;
+  }
+}
+/* Reduced motion is a different readable layout, not an invisible animation. */
+.opening-experience.motion-static {
+  height: 100svh;
+  min-height: 800px;
+}
+.opening-experience.motion-static .opening-sticky {
+  position: relative;
+  height: 100%;
+}
+.opening-experience.motion-static .opening-media {
+  clip-path: inset(15% 5% 14% 47%);
+}
+.opening-experience.motion-static .opening-after {
+  display: none;
+}
+.collection-voyage.motion-static {
+  height: auto;
+  padding: 75px 7%;
+}
+.collection-voyage.motion-static .voyage-sticky {
+  position: relative;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+.collection-voyage.motion-static .voyage-heading {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin-bottom: 40px;
+}
+.collection-voyage.motion-static .voyage-track {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+}
+.collection-voyage.motion-static .voyage-card {
+  width: auto;
+  max-width: none;
+}
+.collection-voyage.motion-static .voyage-selector {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .opening-experience.cinematic-hero {
+    height: 100svh;
+    min-height: 800px;
+  }
+  .opening-sticky {
+    position: relative;
+    height: 100%;
+  }
+  .portfolio-screen {
+    position: relative;
+  }
+  .cursor-enabled [data-cursor] {
+    cursor: auto;
+  }
+}
+@media (max-width: 760px) {
+  .collection-voyage.motion-static .voyage-track {
+    grid-template-columns: 1fr;
+  }
+}
+.preview-badge {
+  position: fixed;
+  bottom: 3px;
+  left: 8px;
+  z-index: 70;
+  display: flex;
+  gap: 10px;
+  padding: 4px 8px;
+  font: 7px/1.3 var(--sans);
+  letter-spacing: 0.1em;
+  background: #20271fee;
+  color: #e4d2ad;
+  border: 1px solid #a48a5266;
+  pointer-events: none;
+}
+.preview-badge span {
+  color: #c8c7b6;
+}
+.opening-sticky .film-control {
+  bottom: 25%;
+  right: 10%;
+}
+.opening-bottom {
+  right: 180px;
+}
+.opening-scrim {
+  background:
+    linear-gradient(90deg, #11170d44, transparent 60%),
+    linear-gradient(0deg, #10170c99, transparent 80%);
+}
+.opening-display {
+  text-shadow: 0 2px 18px #0003;
+}
+@media (max-width: 760px) {
+  .opening-bottom {
+    right: 100px;
+  }
+  .opening-controls button {
+    min-width: 28px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .opening-controls .sequence-play {
+    margin-left: 5px;
+  }
+  .opening-scroll {
+    font-size: 5px;
+    gap: 8px;
+  }
+}
+/* Clip without creating a horizontal scroll container: keyboard focus must not
+   secretly scroll the sticky viewport independently of the animated rail. */
+.voyage-sticky {
+  overflow: clip;
+}

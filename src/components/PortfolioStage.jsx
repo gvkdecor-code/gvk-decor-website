@@ -1,24 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { projects, deckSelections } from "../data/site";
 import Media from "./Media";
 import ProjectViewer from "./ProjectViewer";
+import useReducedMotion from "../hooks/useReducedMotion";
+import { gsap } from "../hooks/motion";
 
 export default function PortfolioStage() {
+  const root = useRef(null);
+  const reduced = useReducedMotion();
   const [selected, setSelected] = useState(null);
   const confirmed = projects.filter((p) => p.media?.length).slice(0, 3);
   const featured = confirmed.length ? confirmed : deckSelections;
+  useEffect(() => {
+    if (reduced) return;
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray(".portfolio-screen").forEach((screen) => {
+        const image = screen.querySelector(".portfolio-background");
+        gsap.fromTo(
+          image,
+          { scale: 1.13, clipPath: "inset(8% 6% 8% 6%)" },
+          {
+            scale: 1,
+            clipPath: "inset(0% 0% 0% 0%)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: screen,
+              start: "top bottom",
+              end: "top top",
+              scrub: 0.6,
+            },
+          },
+        );
+      });
+    }, root);
+    return () => ctx.revert();
+  }, [reduced]);
   return (
     <section
+      ref={root}
       id="selected-projects"
       className="portfolio-stage"
       aria-label="Selected GVK Decor projects"
     >
       {featured.length ? (
         featured.map((project, i) => (
-          <article className="portfolio-screen" key={project.id}>
-            <div className="portfolio-background" data-parallax>
+          <article
+            className="portfolio-screen"
+            key={project.id}
+            data-cursor="View"
+          >
+            <div className="portfolio-background">
               <Media
                 item={{
                   ...project.media[0],
@@ -58,7 +91,7 @@ export default function PortfolioStage() {
         ))
       ) : (
         <article className="portfolio-screen portfolio-pending">
-          <div className="portfolio-background" data-parallax>
+          <div className="portfolio-background">
             <Media item={{ tone: "architecture" }} />
           </div>
           <div className="portfolio-shade" />
