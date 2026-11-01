@@ -1,6 +1,6 @@
 # Drive access: checked before media selection
 
-All 14 supplied folder URLs were requested through the environment's configured
+All 14 supplied folder URLs were previously requested through the environment's configured
 HTTPS proxy. Every request failed with `Tunnel connection failed: 403 Forbidden`.
 This is an environment egress-policy denial, **not proof of a Drive permission
 problem**. No filenames, photos, clips, file counts, metadata or downloads were
@@ -39,3 +39,11 @@ Please keep original filenames and start with these specific groups:
 The current opening is an animated **still-image sequence** using reviewed imagery
 from the supplied pitch deck. It is not described as authentic motion footage.
 The actual project-film requirement remains open until source clips can be reviewed.
+
+## Atelier 05 access recheck
+
+The current enforced policy still does not include drive.google.com, and a fresh
+request to the supplied photos 1 folder returned the same proxy 403. No connected
+Drive import tool is available in this session. File attachments (individual
+originals or a ZIP per project) remain the supported import method. No new media
+review is claimed from that failed request.

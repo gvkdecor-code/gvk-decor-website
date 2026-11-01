@@ -1,79 +1,284 @@
 import { test, expect } from "@playwright/test";
-test("six pages render without errors or horizontal overflow", async ({
+const routes = [
+  ["/", "Crafting"],
+  ["/our-legacy", "A legacy"],
+  ["/collections", "A language"],
+  ["/projects", "Spaces with"],
+  ["/behind-the-craft", "The details"],
+  ["/contact", "Let’s create"],
+];
+
+test("six pages, navigation and shipped media load without errors", async ({
   page,
+  request,
 }) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
+  page.on("console", (m) => {
+    if (m.type() === "error") errors.push(m.text());
   });
-  for (const [path, title] of [
-    ["/", "Crafting Timeless"],
-    ["/our-legacy", "A legacy"],
-    ["/collections", "A language"],
-    ["/projects", "Spaces with"],
-    ["/behind-the-craft", "The details"],
-    ["/contact", "Let’s create"],
-  ]) {
-    await page.goto(path);
+  const links = new Set(),
+    media = new Set();
+  for (const [route, title] of routes) {
+    expect((await page.goto(route)).status()).toBe(200);
     await page.evaluate(() => document.fonts.ready);
     await expect(page.locator("h1")).toContainText(title);
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-    ).toBeTruthy();
+    const found = await page.locator("a[href],img[src]").evaluateAll((nodes) =>
+      nodes.map((el) => ({
+        tag: el.tagName,
+        url: el.getAttribute(el.tagName === "IMG" ? "src" : "href"),
+      })),
+    );
+    for (const entry of found)
+      if (entry.url?.startsWith("/"))
+        (entry.tag === "IMG" ? media : links).add(entry.url.split("#")[0]);
   }
+  for (const path of [...links, ...media])
+    expect((await request.get(path || "/")).ok(), path).toBeTruthy();
   expect(errors).toEqual([]);
 });
-test("navigation reaches collections on mobile and desktop", async ({
+
+test("headings fit their text zones at small phone, tablet and desktop widths", async ({
   page,
-}, info) => {
-  await page.goto("/");
-  await page.getByRole("button", { name: "Open navigation" }).click();
-  await page
-    .locator("nav")
-    .getByRole("link", { name: "Collections", exact: true })
-    .click();
-  await expect(page).toHaveURL(/collections/);
-  await page.getByRole("link", { name: "Upholstery", exact: true }).click();
-  await expect(page).toHaveURL(/#upholstery/);
+}) => {
+  for (const viewport of [
+    { width: 320, height: 740 },
+    { width: 768, height: 1024 },
+    { width: 1366, height: 768 },
+    { width: 1440, height: 1000 },
+  ]) {
+    await page.setViewportSize(viewport);
+    for (const [route] of routes) {
+      await page.goto(route);
+      await page.evaluate(() => document.fonts.ready);
+      const problems = await page.locator("h1,h2,h3").evaluateAll((headings) =>
+        headings.flatMap((h) => {
+          if (
+            h.closest('[hidden],[aria-hidden="true"]') ||
+            !h.getClientRects().length
+          )
+            return [];
+          const b = h.getBoundingClientRect(),
+            text = h.textContent.trim();
+          const errors = [];
+          if (h.scrollWidth > h.clientWidth + 2)
+            errors.push(`${text}: text wider than heading`);
+          if (
+            !h.closest(".material-track") &&
+            (b.left < -2 || b.right > innerWidth + 2)
+          )
+            errors.push(`${text}: outside viewport`);
+          const p = h.nextElementSibling;
+          if (
+            p?.tagName === "P" &&
+            p.getBoundingClientRect().top < b.bottom - 2
+          )
+            errors.push(`${text}: following paragraph overlaps`);
+          return errors;
+        }),
+      );
+      expect(problems, `${route} at ${viewport.width}px`).toEqual([]);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+      ).toBeTruthy();
+    }
+  }
 });
-test("project filters stay honest, craft accordion works, appointment form prepares an email without claiming delivery", async ({
+
+test("1959 has safe caption spacing and the exact tagline has separate lines", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+  await expect(page.locator("h1")).toHaveAccessibleName(
+    "Crafting Timeless Spaces Since 1959",
+  );
+  const lines = await page
+    .locator(".film-title > span")
+    .evaluateAll((nodes) =>
+      nodes.map((el) => el.getBoundingClientRect().toJSON()),
+    );
+  for (let i = 1; i < lines.length; i++)
+    expect(lines[i].top).toBeGreaterThanOrEqual(lines[i - 1].bottom - 1);
+  const year = page.locator(".heritage-year"),
+    caption = page.locator(".heritage-origin figcaption");
+  await year.scrollIntoViewIfNeeded();
+  expect(
+    (await caption.boundingBox()).y -
+      ((await year.boundingBox()).y + (await year.boundingBox()).height),
+  ).toBeGreaterThanOrEqual(20);
+  await page.goto("/our-legacy");
+  const gap = await page.locator(".legacy-number").evaluate((el) => {
+    const text = el.firstChild;
+    const range = document.createRange();
+    range.selectNode(text);
+    return (
+      el.querySelector("span").getBoundingClientRect().top -
+      range.getBoundingClientRect().bottom
+    );
+  });
+  expect(gap).toBeGreaterThan(15);
+});
+
+test("opening, craft and gallery compositions change with real scrolling", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const before = await page
+    .locator(".film-images img")
+    .first()
+    .evaluate((el) => getComputedStyle(el).transform);
+  await page.evaluate(() => {
+    const r = document.querySelector(".film-opening");
+    window.scrollTo({
+      top: r.offsetTop + (r.offsetHeight - innerHeight) * 0.7,
+      behavior: "instant",
+    });
+  });
+  await expect
+    .poll(() =>
+      page
+        .locator(".film-copy")
+        .evaluate((el) => Number(getComputedStyle(el).opacity)),
+    )
+    .toBeLessThan(0.1);
+  await expect
+    .poll(() =>
+      page
+        .locator(".film-images img")
+        .first()
+        .evaluate((el) => getComputedStyle(el).transform),
+    )
+    .not.toBe(before);
+  await page.getByRole("button", { name: /Texture, layered/ }).click();
+  await expect(page.locator(".craft-scene.is-active h3")).toHaveText(
+    "Texture, layered.",
+  );
+  await page.evaluate(() =>
+    window.scrollTo({
+      top: document.querySelector(".space-gallery").offsetTop,
+      behavior: "instant",
+    }),
+  );
+  await expect(page.locator(".space-caption h2")).toHaveText("Light & living");
+  await page
+    .getByRole("button", { name: "Next selection", exact: true })
+    .click();
+  await expect(page.locator(".space-caption h2")).toHaveText(
+    "The curtain studies",
+  );
+  await expect
+    .poll(() =>
+      page
+        .locator(".space-frame")
+        .nth(1)
+        .evaluate((el) => getComputedStyle(el).clipPath),
+    )
+    .toMatch(/inset\(0/);
+});
+
+test("gallery shows source attribution, navigation and focus restoration", async ({
   page,
 }) => {
   await page.goto("/projects");
-  await page.getByRole("button", { name: "Homes", exact: true }).click();
+  const card = page.getByRole("button", { name: /Light & living/ });
+  await card.click();
+  const dialog = page.getByRole("dialog", { name: "Light & living" });
+  await expect(dialog).toContainText("awaiting confirmation");
+  const image = dialog.locator(".viewer-stage img");
+  await expect(image).toBeVisible();
+  await expect
+    .poll(() => image.evaluate((el) => el.complete && el.naturalWidth > 0))
+    .toBeTruthy();
+  await dialog.getByRole("button", { name: "Next image" }).click();
+  await expect(dialog.locator("img")).toHaveAttribute("alt", /Ochre armchair/);
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(card).toBeFocused();
+});
+
+test("mobile-friendly navigation and native collection exhibition work", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open navigation" }).click();
   await expect(
-    page.getByRole("button", { name: "Homes", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page.getByRole("heading", { name: "Our homes journal is coming soon." }),
+    page.getByRole("dialog", { name: "Site navigation" }),
   ).toBeVisible();
-  await page.goto("/behind-the-craft");
-  await page.getByRole("button", { name: /A material dialogue/ }).click();
+  await page.keyboard.press("Escape");
   await expect(
-    page.getByText(
-      "Explore textures, colours and finishes in relation to your interiors.",
+    page.getByRole("button", { name: "Open navigation" }),
+  ).toBeFocused();
+  await page.locator(".material-exhibition").scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "Next collections" }).click();
+  await expect
+    .poll(() => page.locator(".material-track").evaluate((el) => el.scrollLeft))
+    .toBeGreaterThan(100);
+  const link = page.getByRole("link", {
+    name: "Discover Upholstery",
+    exact: true,
+  });
+  await link.focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/collections#upholstery/);
+  await expect(
+    page.getByRole("heading", { name: "Upholstery", exact: true }),
+  ).toBeVisible();
+});
+
+test("reduced motion is a readable static experience and changes live", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".film-opening")).toHaveClass(/is-static/);
+  await expect(page.locator(".craft-chapter")).toHaveClass(/is-static/);
+  await expect(page.locator(".space-gallery")).toHaveClass(/is-static/);
+  await expect(page.locator(".craft-scene")).toHaveCount(3);
+  for (const scene of await page.locator(".craft-scene").all()) {
+    await scene.scrollIntoViewIfNeeded();
+    await expect(scene).toHaveAttribute("aria-hidden", "false");
+    await expect(scene).toBeVisible();
+  }
+  await expect(page.locator(".cursor-aura")).not.toBeVisible();
+  await expect(page.locator(".craft-sticky")).toHaveCSS("position", "relative");
+  expect(
+    await page.evaluate(
+      () =>
+        document.getAnimations().filter((a) => a.playState === "running")
+          .length,
     ),
-  ).toBeVisible();
+  ).toBe(0);
+});
+
+test("business identity, two locations and appointment email are preserved", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".film-signature img")).toBeVisible();
+  expect(
+    await page
+      .locator("header .official-logo")
+      .evaluate((img) => img.complete && img.naturalWidth > 0),
+  ).toBeTruthy();
+  await expect(page.locator(".preview-badge")).toContainText("GVK-ATELIER-05");
+  await expect(page.locator(".visit-spread")).toContainText("Jubilee Hills");
+  await expect(page.locator(".visit-spread")).toContainText("Secunderabad");
   await page.goto("/contact");
-  await expect(
-    page.getByRole("button", { name: "Prepare appointment email" }),
-  ).toBeEnabled();
-  await expect(
-    page.getByRole("link", { name: "Talk to us on WhatsApp" }),
-  ).toHaveAttribute("href", "https://wa.me/918977030636");
   await expect(
     page.locator("main").getByRole("link", { name: "gvkdecor@gmail.com" }),
   ).toHaveAttribute("href", "mailto:gvkdecor@gmail.com");
-  await page.getByLabel("Your name").fill("Test visitor");
-  await expect(page.getByLabel("Your name")).toHaveValue("Test visitor");
-  await page.getByLabel("Email address").fill("visitor@example.com");
+  await expect(
+    page.getByRole("link", { name: "Talk to us on WhatsApp" }),
+  ).toHaveAttribute("href", "https://wa.me/918977030636");
+  await page.getByLabel("Your name").fill("Design review");
+  await page.getByLabel("Email address").fill("review@example.com");
+  await page.getByLabel("Visit location").selectOption("GVK Decor Store");
   await page
     .getByLabel("A little about your project")
-    .fill("Curtains for our home.");
-  await page.getByLabel("Visit location").selectOption("GVK Decor Store");
+    .fill("Curtains and upholstery for a home.");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Prepare appointment email" }).click();
   await expect(page.getByRole("status")).toContainText(
@@ -83,443 +288,110 @@ test("project filters stay honest, craft accordion works, appointment form prepa
     page.getByRole("link", { name: "Open appointment email" }),
   ).toHaveAttribute(
     "href",
-    /mailto:gvkdecor@gmail.com.*visitor%40example.com.*GVK%20Decor%20Store/,
+    /mailto:gvkdecor@gmail.com.*review%40example.com.*GVK%20Decor%20Store/,
   );
 });
 
-test("small phones remain within the viewport after fonts load", async ({
+test("short-screen craft captions and controls have separate safe zones", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 320, height: 740 });
-  for (const path of ["/", "/contact", "/collections"]) {
-    await page.goto(path);
-    await page.evaluate(() => document.fonts.ready);
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-    ).toBeTruthy();
+  for (const viewport of [
+    { width: 320, height: 740 },
+    { width: 390, height: 844 },
+    { width: 1366, height: 768 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    for (const index of [0, 1, 2]) {
+      await page.evaluate((index) => {
+        const r = document.querySelector(".craft-chapter");
+        window.scrollTo({
+          top:
+            r.offsetTop + (r.offsetHeight - innerHeight) * ((index + 0.2) / 3),
+          behavior: "instant",
+        });
+      }, index);
+      await expect(page.locator(".craft-scene.is-active")).toHaveCount(1);
+      const boxes = await page.evaluate(() => {
+        const h = document
+          .querySelector(".craft-heading")
+          .getBoundingClientRect();
+        const c = document
+          .querySelector(".craft-scene.is-active .craft-caption")
+          .getBoundingClientRect();
+        const n = document
+          .querySelector(".craft-navigation")
+          .getBoundingClientRect();
+        return {
+          headingBottom: h.bottom,
+          captionTop: c.top,
+          captionBottom: c.bottom,
+          navTop: n.top,
+          navBottom: n.bottom,
+          height: innerHeight,
+        };
+      });
+      expect(
+        boxes.captionTop - boxes.headingBottom,
+        JSON.stringify({ viewport, index, boxes }),
+      ).toBeGreaterThan(12);
+      expect(
+        boxes.navTop - boxes.captionBottom,
+        JSON.stringify({ viewport, index, boxes }),
+      ).toBeGreaterThan(10);
+      expect(boxes.navBottom).toBeLessThanOrEqual(boxes.height);
+    }
   }
 });
 
-test("cinematic chapters respond to exploration without inventing projects", async ({
+test("gallery controls remain clickable beside the floating enquiry button", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
-    "Crafting Timeless Spaces Since 1959",
+  await page.evaluate(() =>
+    window.scrollTo({
+      top: document.querySelector(".space-gallery").offsetTop,
+      behavior: "instant",
+    }),
   );
-  await expect(page.locator(".hero-media-credit")).toContainText(/Pitch.deck/);
-  await page.getByRole("button", { name: /Designer blinds/ }).click();
-  await expect(
-    page.getByRole("button", { name: /Designer blinds/ }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("#collection-preview")).toContainText(
-    "Precision meets softness",
-  );
-  await expect(
-    page.getByRole("link", { name: "Discover Designer blinds" }),
-  ).toHaveAttribute("href", "/collections#blinds");
-  await page.getByRole("button", { name: /Texture, layered/ }).click();
-  await expect(page.locator(".scroll-story")).toHaveAttribute(
-    "data-active",
-    "1",
-  );
-  await expect(page.locator(".portfolio-screen")).toHaveCount(3);
-  await expect(page.locator(".portfolio-screen").first()).toContainText(
-    "Pitch-deck selection",
-  );
-});
-
-test("menu supports keyboard dismissal and releases scroll lock", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const trigger = page.getByRole("button", { name: "Open navigation" });
-  await trigger.click();
-  await expect(
-    page.getByRole("dialog", { name: "Site navigation" }),
-  ).toBeVisible();
-  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
-    "hidden",
-  );
-  await page.keyboard.press("Escape");
-  await expect(
-    page.getByRole("dialog", { name: "Site navigation" }),
-  ).not.toBeVisible();
-  await expect(trigger).toBeFocused();
-  expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
-});
-
-test("reduced motion keeps storytelling visible and disables parallax and cursor", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  await expect(page.locator("h1")).toBeVisible();
-  await page.locator(".heritage-words").scrollIntoViewIfNeeded();
-  await expect(page.locator(".heritage-words")).toHaveCSS("opacity", "1");
-  await expect(page.locator(".hero-backdrop.is-active")).toHaveCSS(
-    "transform",
-    "none",
-  );
-  await expect(page.locator(".cursor-aura")).not.toBeVisible();
-  expect(
-    await page.evaluate(
-      () =>
-        document.getAnimations().filter((a) => a.playState === "running")
-          .length,
-    ),
-  ).toBe(0);
-  await page.getByRole("button", { name: "Open navigation" }).click();
-  await page
-    .locator("nav")
-    .getByRole("link", { name: "Contact", exact: true })
-    .click();
-  await expect(page).toHaveURL(/contact/);
-});
-
-test("fullscreen project viewer navigates and returns keyboard focus using test-only media", async ({
-  page,
-}) => {
-  const image =
-    "data:image/svg+xml," +
-    encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="#a99c83"/></svg>',
-    );
-  const fixture = [
-    {
-      id: "test-only",
-      title: "Test-only gallery fixture",
-      location: "Test environment",
-      category: "Homes",
-      description: "Test fixture, never a published project.",
-      media: [
-        { image, alt: "Test slide one" },
-        { image, alt: "Test slide two" },
-      ],
-    },
-  ];
-  await page.route("**/src/data/site.js*", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.text()).replace(
-      "export const projects = [];",
-      `export const projects = ${JSON.stringify(fixture)};`,
-    );
-    await route.fulfill({ response, body });
+  const next = page.getByRole("button", {
+    name: "Next selection",
+    exact: true,
   });
-  await page.goto("/projects");
-  const card = page.getByRole("button", { name: /Test-only gallery fixture/ });
-  await card.click();
-  await expect(
-    page.getByRole("dialog", { name: "Test-only gallery fixture" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("dialog").getByRole("img", { name: "Test slide one" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Next image" }).click();
-  await expect(
-    page.getByRole("dialog").getByRole("img", { name: "Test slide two" }),
-  ).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog")).not.toBeVisible();
-  await expect(card).toBeFocused();
+  await expect
+    .poll(() =>
+      next.evaluate((button) => {
+        const r = button.getBoundingClientRect();
+        return (
+          document
+            .elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)
+            ?.closest("button") === button
+        );
+      }),
+    )
+    .toBeTruthy();
+  await next.click();
+  await expect(page.locator(".space-caption h2")).toHaveText(
+    "The curtain studies",
+  );
 });
 
-test("cinematic film requires play, pauses off-screen and respects motion changes", async ({
+test("original video slot retains deliberate play and reduced-motion pause", async ({
   page,
 }) => {
   await page.route("**/src/data/site.js*", async (route) => {
     const response = await route.fetch();
     const body = (await response.text()).replace(
       /export const heroMedia = \{[\s\S]*?\};/,
-      'export const heroMedia = { video: "/media/material-test.webm", alt: "Test-only film", tone: "cinema" };',
-    );
-    await route.fulfill({ response, body });
-  });
-  await page.route("**/media/material-test.webm", (route) =>
-    route.fulfill({
-      path: "tests/fixtures/material-test.webm",
-      contentType: "video/webm",
-    }),
-  );
-  await page.goto("/");
-  const film = page.locator(".hero-backdrop video");
-  await expect(film).toHaveJSProperty("paused", true);
-  await page.getByRole("button", { name: "Play film" }).click();
-  await expect(film).toHaveJSProperty("paused", false);
-  await page.locator(".collection-voyage").scrollIntoViewIfNeeded();
-  expect(
-    (await film.boundingBox()).y + (await film.boundingBox()).height,
-  ).toBeLessThan(0);
-  await expect(film).toHaveJSProperty("paused", true);
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  await page.getByRole("button", { name: "Play film" }).click();
-  await expect(film).toHaveJSProperty("paused", false);
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(film).toHaveJSProperty("paused", true);
-});
-
-test("homepage scroll sequence changes with scroll and exposes both locations", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await expect(page.locator("h1")).toHaveAccessibleName(
-    "Crafting Timeless Spaces Since 1959",
-  );
-  await expect(page.locator("header .official-logo")).toBeVisible();
-  expect(
-    await page
-      .locator("header .official-logo")
-      .evaluate((img) => img.complete && img.naturalWidth > 0),
-  ).toBeTruthy();
-  const sequence = page.locator(".scroll-story");
-  await page.evaluate(() => {
-    const el = document.querySelector(".scroll-story");
-    window.scrollTo({
-      top:
-        el.getBoundingClientRect().top +
-        scrollY +
-        (el.offsetHeight - innerHeight) * 0.85,
-      behavior: "instant",
-    });
-  });
-  await expect(sequence).toHaveAttribute("data-active", "2");
-  await page.getByRole("button", { name: /Light, framed/ }).click();
-  await expect(sequence).toHaveAttribute("data-active", "0");
-  await page.locator(".story-skip").click();
-  await expect(page).toHaveURL(/#collections/);
-  await expect(page.locator(".home-locations")).toContainText(
-    "GVK Decor Experience Centre",
-  );
-  await expect(page.locator(".home-locations")).toContainText(
-    "Road No. 39, Jubilee Hills, Hyderabad",
-  );
-  await expect(page.locator(".home-locations")).toContainText(
-    "GVK Decor Store",
-  );
-  await expect(page.locator(".home-locations")).toContainText(
-    "Secunderabad, Hyderabad",
-  );
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBeTruthy();
-});
-
-test("reviewed deck selection opens full-screen without invented attribution", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const first = page.locator(".portfolio-screen").first();
-  await first.getByRole("button", { name: "View the deck selection" }).click();
-  const dialog = page.getByRole("dialog", { name: "Light & living" });
-  await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText(
-    "Project name, location and credits are awaiting confirmation",
-  );
-  const photo = dialog.locator(".viewer-stage img");
-  await expect(photo).toBeVisible();
-  expect(
-    await photo.evaluate((img) => img.complete && img.naturalWidth > 0),
-  ).toBeTruthy();
-  await dialog.getByRole("button", { name: "Next image" }).click();
-  await expect(dialog.locator(".viewer-stage img")).toHaveAttribute(
-    "alt",
-    /Ochre armchair/,
-  );
-  await page.keyboard.press("Escape");
-  await expect(dialog).not.toBeVisible();
-});
-
-test("reduced motion renders each scroll chapter as readable static content", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  await expect(page.locator(".scroll-story")).toHaveClass(/is-reduced/);
-  await expect(page.locator(".story-frame")).toHaveCount(3);
-  for (const frame of await page.locator(".story-frame").all()) {
-    await frame.scrollIntoViewIfNeeded();
-    await expect(frame).toBeVisible();
-    await expect(frame).toHaveAttribute("aria-hidden", "false");
-  }
-  await expect(page.locator(".story-sticky")).toHaveCSS("position", "relative");
-});
-
-test("scroll film seeks to the scroll position without autoplay and falls back for reduced motion", async ({
-  page,
-}) => {
-  await page.route("**/src/data/site.js*", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.text()).replace(
-      /export const sequenceFilm = \{[\s\S]*?\};/,
-      'export const sequenceFilm = {video:"/tests/fixtures/scroll-seek-test.mp4",poster:"",alt:"Test scroll film"};',
+      'export const heroMedia={video:"/tests/fixtures/scroll-seek-test.mp4",alt:"Test-only video",poster:"",tone:"cinema"};',
     );
     await route.fulfill({ response, body });
   });
   await page.goto("/");
-  const film = page.locator(".scroll-film");
-  await page.locator(".scroll-story").scrollIntoViewIfNeeded();
-  await expect(film).toHaveClass(/is-ready/);
-  for (const progress of [0.25, 0.8]) {
-    await page.evaluate((progress) => {
-      const el = document.querySelector(".scroll-story");
-      window.scrollTo({
-        top:
-          el.getBoundingClientRect().top +
-          scrollY +
-          (el.offsetHeight - innerHeight) * progress,
-        behavior: "instant",
-      });
-    }, progress);
-    await expect
-      .poll(() =>
-        film.evaluate((video) =>
-          Math.abs(
-            video.currentTime -
-              (video.duration - 0.08) *
-                Number(
-                  document.querySelector(".scroll-story").dataset.progress,
-                ),
-          ),
-        ),
-      )
-      .toBeLessThan(0.15);
-    await expect(film).toHaveJSProperty("paused", true);
-  }
+  const video = page.locator(".film-images video");
+  await expect(video).toHaveJSProperty("paused", true);
+  await page.getByRole("button", { name: "Play film", exact: true }).click();
+  await expect(video).toHaveJSProperty("paused", false);
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(film).toHaveCount(0);
-  await expect(page.locator(".story-frame")).toHaveCount(3);
-});
-
-test("opening aperture and collection rail visibly move with scroll", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await page.evaluate(() => document.fonts.ready);
-  const aperture = page.locator(".opening-media");
-  const before = await aperture.evaluate((el) => getComputedStyle(el).clipPath);
-  await page.evaluate(() => {
-    const root = document.querySelector(".opening-experience");
-    window.scrollTo({
-      top: root.offsetTop + (root.offsetHeight - innerHeight) * 0.8,
-      behavior: "instant",
-    });
-  });
-  await expect
-    .poll(() =>
-      page
-        .locator(".opening-display")
-        .evaluate((el) => Number(getComputedStyle(el).opacity)),
-    )
-    .toBeLessThan(0.1);
-  await expect
-    .poll(() => aperture.evaluate((el) => getComputedStyle(el).clipPath))
-    .not.toBe(before);
-  await expect(page.locator(".opening-after")).toHaveCSS("opacity", "1");
-  const rail = page.locator(".voyage-track");
-  await page.evaluate(() => {
-    const root = document.querySelector(".collection-voyage");
-    window.scrollTo({ top: root.offsetTop, behavior: "instant" });
-  });
-  await expect
-    .poll(() => rail.evaluate((el) => el.getBoundingClientRect().left))
-    .toBeGreaterThan(-100);
-  await page.evaluate(() => {
-    const root = document.querySelector(".collection-voyage");
-    window.scrollTo({
-      top: root.offsetTop + (root.offsetHeight - innerHeight) * 0.7,
-      behavior: "instant",
-    });
-  });
-  await expect
-    .poll(() => rail.evaluate((el) => el.getBoundingClientRect().left))
-    .toBeLessThan(-500);
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBeTruthy();
-});
-
-test("private preview identifies the new downloadable revision", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await expect(page.locator(".preview-badge")).toContainText("GVK-CINEMA-04");
-  await expect(page.locator(".hero-media-credit")).toContainText(
-    "authentic video pending",
-  );
-});
-
-test("internal navigation and shipped media resolve without broken responses", async ({
-  page,
-  request,
-}) => {
-  const paths = new Set(),
-    assets = new Set();
-  for (const route of [
-    "/",
-    "/our-legacy",
-    "/collections",
-    "/projects",
-    "/behind-the-craft",
-    "/contact",
-  ]) {
-    const response = await page.goto(route);
-    expect(response.status()).toBe(200);
-    const found = await page.locator("a[href],img[src]").evaluateAll((nodes) =>
-      nodes.map((el) => ({
-        tag: el.tagName,
-        url: el.getAttribute(el.tagName === "IMG" ? "src" : "href"),
-      })),
-    );
-    for (const item of found) {
-      if (item.url?.startsWith("/"))
-        (item.tag === "IMG" ? assets : paths).add(item.url.split("#")[0]);
-    }
-  }
-  for (const path of [...paths, ...assets]) {
-    const response = await request.get(path || "/");
-    expect(response.ok(), path).toBeTruthy();
-  }
-});
-
-test("keyboard collection focus brings the chosen card into view", async ({
-  page,
-}) => {
-  await page.goto("/#collections");
-  await page.keyboard.press("Tab");
-  const link = page.getByRole("link", {
-    name: "Discover Bedding",
-    exact: true,
-  });
-  await link.focus();
-  await expect
-    .poll(() =>
-      link.evaluate((el) => {
-        const b = el.getBoundingClientRect();
-        return b.left >= 0 && b.right <= innerWidth;
-      }),
-    )
-    .toBeTruthy();
-  await expect(link).toBeFocused();
-});
-
-test("context cursor works on desktop and stays absent on touch", async ({
-  page,
-}, info) => {
-  await page.goto("/");
-  if (info.project.name === "mobile") {
-    await expect(page.locator(".cursor-aura")).not.toBeVisible();
-  } else {
-    await expect(page.locator("body")).toHaveClass(/cursor-enabled/);
-    await page.mouse.move(0, 0);
-    await page.mouse.move(1100, 400);
-    await expect(page.locator(".cursor-aura")).toHaveClass(/cursor-context/);
-    await expect(page.locator(".cursor-aura b")).toHaveText("Scroll");
-    await expect(page.locator(".cursor-aura span")).toHaveCSS("width", "88px");
-  }
+  await expect(video).toHaveJSProperty("paused", true);
 });

@@ -1,37 +1,47 @@
-# GVK-CINEMA-04 — visual and motion review
+# Atelier 05: photography-first creative direction
 
-This is a different homepage composition, not only a font/palette adjustment.
-Screenshots under docs/previews are actual local browser captures. Open their
-GitHub file pages to view them if ChatGPT's image interface does not display them.
-They are design-review artifacts, not a public website deployment.
+This revision replaces the previous homepage scenes and removes the accumulated
+CSS overrides. It is not another animation layer over The Bespoke Edit layout.
+The main palette is warm ivory, deep charcoal, muted champagne and natural fabric
+tones. The supplied logo retains its own original gold artwork.
 
-## What moves
+## New composition and motion
 
-| Section | Actual implemented motion | Control and fallback |
+| Scene | Composition | Verified motion and interaction |
 |---|---|---|
-| Opening / The Bespoke Edit | Three editorial title lines rise and unrotate on arrival. As the visitor scrolls, the image aperture expands from a right-hand cropped panel to the full viewport, the title translates upward and disappears, the photograph zooms from 1.13 to 1, and a second caption arrives. Three stills crossfade at scroll chapters. | GSAP ScrollTrigger, scrub 0.65; native sticky stage. Image selector and explicit Play/Pause **image sequence** controls. Skip to heritage. Reduced motion shows a static composition. No authentic film is claimed. |
-| Heritage | Large 1959 composition and source-based founder story reveal as a quiet intermission. | Observer-based reveal and restrained text treatment; immediate static content under reduced motion. |
-| Craft | A three-stage pinned photographic sequence changes from window light to fabric to handwork. The image layer shifts, scales and skews subtly while text crossfades between chapters. | Native scroll position, chapter buttons and skip link. Existing video-scrub slot remains tested with a synthetic fixture; it contains no unreviewed Drive clip. Reduced motion becomes three static panels. |
-| Furnishing edit | Normal downward scrolling moves seven large cards sideways; the current index/category updates. Product photographs zoom gently on hover. | GSAP ScrollTrigger, scrub 0.6. Buttons jump to collections; keyboard focus brings links into view. Reduced motion becomes a vertical/grid catalogue, with no forced lateral animation. |
-| Portfolio | Full-screen panels overlap. Each image opens from an inset crop while scaling 1.13 to 1. | Native sticky screens and ScrollTrigger; each opens the existing accessible full-screen gallery. Reduced motion removes overlap/reveal animation. Source labels explicitly identify pitch-deck selections. |
-| Desktop cursor | A damped small ring expands into a labelled Scroll/Discover/View target over media; links use an arrow accent. | Passive pointer events, animation frames. Native pointer retained outside context surfaces. Disabled on touch, form fields, dialogs and reduced-motion preference. |
-| Page navigation | Browser-native view transition blends route changes; ordinary navigation if unsupported. | Respects reduced motion. All six routes retain normal links and keyboard navigation. |
+| Opening | Full-screen room photograph; one contained, central gold-logo reveal; exact three-line tagline in normal document flow. No floating EST/1959 block. | Logo mask opens over 1.1 seconds. Typography arrives with restrained stagger. Scrolling moves the copy away, scales the photograph 1→1.08 and changes three source-attributed frames. A final small inset creates a transition into ivory. Photographs are selectable directly. |
+| Heritage | A year/caption figure, a narrative column, and a separate portrait image. | Photograph wipes into its own cell as the spread enters. The year stays stationary and the caption has explicit spacing; there is no negative line-height overlap. |
+| Atelier | Large fabric image beside a separate charcoal text panel. Mobile uses image above copy. | Normal scrolling advances light, texture and handwork chapters. Still photographs scale subtly; captions crossfade. Chapter controls and a skip link support direct access. These are animated stills, not claimed physical fabric footage. |
+| The spaces | Full-bleed room photographs with a separate caption band, rather than oversized type printed over furnishings. | Vertical photographic wipes move through deck selections. Index/arrow controls seek to each scene; a button opens the accessible image gallery. Controls are kept clear of WhatsApp. |
+| Collections | Native horizontal exhibition of portrait material cards on ivory. | Touch swipe, keyboard focus and previous/next arrows explore the seven categories. Gentle image zoom on hover. Normal page scrolling is never redirected. |
+| Visit | Calm two-column invitation and both location addresses. | Clear appointment access without another pinned animation. |
 
-## Available images and missing film
+Under reduced motion, the opening stays static and craft/gallery sequences become
+readable stacked panels. Native navigation works without the View Transitions API.
+The optional desktop context cursor remains absent on touch, forms, dialogs and
+reduced motion.
 
-The available real images are extracted from the supplied GVK Decor pitch deck.
-No new project names, locations or credits are invented. The opening is explicitly
-labelled **Pitch-deck still-image sequence — authentic video pending**.
+## Alignment checks
 
-All 14 Drive folders failed at the environment proxy before their contents could
-be listed. None of those clips or photographs has been reviewed. The original
-project-film acceptance criterion is therefore **not complete**. Upload/access
-requirements are in DRIVE-ACCESS.md. No placeholder or synthetic test film is
-shipped as GVK Decor work.
+Heading bounds are checked on all six pages at 320, 768, 1366 and 1440px widths.
+Home and Legacy receive explicit 1959/caption-gap measurements. Short-screen tests
+measure heading/caption/control separation at 320×740, 390×844 and 1366×768.
+Screenshots are inspected separately from these geometry assertions. A 16-second
+local browser screen recording also captures the opening, heritage, craft,
+photographic wipes and native collection exploration; sampled frames were
+reviewed for composition. It is a UI walkthrough, not original project footage.
 
-## Private Windows preview
+The Legacy year uses generous line-height and a separate flex row for its caption.
+The opening's Since 1959 is part of the normal headline flow, not an absolutely
+positioned aside. Desktop and mobile craft copy occupy different zones from imagery.
 
-Stop the old server, download a fresh main ZIP, extract to a new folder, run
-START-PREVIEW.cmd and look for **GVK-CINEMA-04** at bottom left. The previous ZIP
-never updates itself. The launcher rejects an occupied port so an old server
-cannot be silently confused with the new copy. See WINDOWS-PREVIEW.md.
+## Real media limitation
+
+Only the supplied pitch deck and its extracted photographs/logo are accessible.
+Project names, client identities and credits are not invented. Drive import remains
+blocked at the environment proxy; no Drive clips have been reviewed. The actual
+opening film is still pending original footage. The current image sequence is
+explicitly labelled as pitch-deck photography.
+
+See [current screenshots](previews/README.md), [media access](DRIVE-ACCESS.md),
+[original media review](MEDIA-REVIEW.md), and [Windows preview](WINDOWS-PREVIEW.md).

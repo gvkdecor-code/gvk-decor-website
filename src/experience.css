@@ -1,0 +1,1137 @@
+/* Atelier 05: restrained, photography-led compositions with separate text zones. */
+.film-opening {
+  position: relative;
+  height: 185svh;
+  background: var(--ink);
+  color: var(--ivory);
+}
+.film-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 720px;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 150px 100px 1fr 95px;
+}
+.film-images,
+.film-frame,
+.film-tone {
+  position: absolute;
+  inset: 0;
+}
+.film-images {
+  z-index: -2;
+}
+.film-frame {
+  opacity: 0;
+  transition: opacity 0.85s ease;
+}
+.film-frame.is-active {
+  opacity: 1;
+}
+.film-frame .media {
+  height: 100%;
+}
+.film-frame .media-label {
+  display: none;
+}
+.film-frame img {
+  object-position: center;
+}
+.film-tone {
+  z-index: -1;
+  background: #10190e70;
+  pointer-events: none;
+}
+.film-signature {
+  grid-row: 2;
+  justify-self: center;
+  text-align: center;
+  align-self: start;
+}
+.film-signature img {
+  width: 180px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+.film-signature p {
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  color: #e2d4b8;
+  margin-top: 12px;
+}
+.film-copy {
+  grid-row: 3;
+  align-self: center;
+  margin: 0 8%;
+  padding: 32px 0;
+  max-width: 850px;
+}
+.film-copy > .eyebrow {
+  font-size: 8px;
+  color: #e8dcc6;
+  margin-bottom: 18px;
+}
+.film-title {
+  font-size: clamp(65px, 7.2vw, 112px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ivory);
+}
+.film-title > span {
+  display: block;
+}
+.film-title .film-year {
+  font-style: italic;
+  color: #e3d4b8;
+  font-size: 0.76em;
+  margin-top: 9px;
+  line-height: 1.2;
+}
+.film-copy .text-link {
+  margin-top: 22px;
+}
+.film-bottom {
+  grid-row: 4;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 8%;
+  padding-right: 145px;
+  gap: 30px;
+}
+.film-scroll {
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 44px;
+}
+.film-select {
+  display: flex;
+  gap: 12px;
+}
+.film-select button {
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid #d9c7a655;
+  color: #f0e5ce;
+  font-size: 10px;
+}
+.film-select button[aria-pressed="true"] {
+  border-color: #e6d4ae;
+}
+.film-credit {
+  position: absolute;
+  right: 8%;
+  bottom: 110px;
+  max-width: 270px;
+  background: #192116b3;
+  color: #e5decf;
+  padding: 7px 11px;
+  font-size: 8px;
+  line-height: 1.8;
+}
+.film-images .film-control {
+  bottom: 28%;
+  right: 8%;
+}
+.film-opening.is-static {
+  height: 100svh;
+  min-height: 800px;
+}
+.film-opening.is-static .film-sticky {
+  position: relative;
+  height: 100%;
+  min-height: 800px;
+}
+/* The year, caption, narrative and photograph have distinct grid cells. */
+.heritage-spread {
+  background: var(--ivory);
+}
+.spread-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 30px;
+  border-top: 1px solid var(--line);
+  padding-top: 25px;
+}
+.spread-top .eyebrow {
+  margin: 0;
+}
+.spread-top > span {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.heritage-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 60px 10%;
+  padding-top: 65px;
+  align-items: center;
+}
+.heritage-origin {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-self: start;
+}
+.heritage-year {
+  display: block;
+  font: clamp(125px, 15vw, 220px)/1.2 var(--serif);
+  letter-spacing: -0.02em;
+  color: var(--gold);
+}
+.heritage-origin figcaption {
+  font-size: 11px;
+  line-height: 1.85;
+  color: var(--muted);
+  max-width: 240px;
+}
+.heritage-narrative h2 {
+  font-size: clamp(44px, 4.3vw, 66px);
+  line-height: 1.17;
+}
+.heritage-narrative p {
+  margin: 26px 0 12px;
+  max-width: 480px;
+}
+.heritage-portrait {
+  grid-column: 1;
+  grid-row: 2;
+  height: 410px;
+  overflow: hidden;
+}
+.heritage-portrait .media {
+  height: 100%;
+}
+.heritage-portrait img {
+  object-position: center 45%;
+}
+.heritage-footnote {
+  grid-column: 2;
+  align-self: end;
+  border-top: 1px solid var(--line);
+  padding-top: 25px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  line-height: 2.2;
+  max-width: 340px;
+}
+/* Craft images and copy never share a text box. */
+.craft-chapter {
+  height: 255svh;
+  background: #1c221d;
+  color: var(--ivory);
+  --craft-progress: 0;
+}
+.craft-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 800px;
+  overflow: hidden;
+}
+.craft-heading {
+  position: absolute;
+  left: 65%;
+  right: 7%;
+  top: 125px;
+}
+.craft-heading .eyebrow {
+  color: var(--champagne);
+  margin-bottom: 20px;
+}
+.craft-heading h2 {
+  font-size: clamp(39px, 3.8vw, 58px);
+  line-height: 1.15;
+}
+.craft-heading em {
+  color: #c7b696;
+}
+.craft-scenes {
+  position: absolute;
+  inset: 0;
+}
+.craft-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.65s ease,
+    visibility 0.65s;
+}
+.craft-scene.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+.craft-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 58%;
+  overflow: hidden;
+}
+.craft-image .media {
+  height: 100%;
+}
+.craft-image img {
+  object-position: center 45%;
+  transform: scale(calc(1 + var(--craft-progress) * 0.045));
+}
+.craft-caption {
+  position: absolute;
+  left: 65%;
+  right: 7%;
+  top: 46%;
+}
+.chapter-counter {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--champagne);
+}
+.craft-caption h3 {
+  font-size: 40px;
+  line-height: 1.15;
+  margin: 20px 0;
+}
+.craft-caption p {
+  color: #c8c8b9;
+  font-size: 13px;
+  max-width: 340px;
+}
+.craft-caption .text-link {
+  margin-top: 20px;
+}
+.craft-navigation {
+  position: absolute;
+  left: 65%;
+  right: 7%;
+  bottom: 48px;
+}
+.craft-navigation > div {
+  display: flex;
+  gap: 15px;
+}
+.craft-navigation button {
+  background: none;
+  border: 0;
+  border-top: 1px solid #cbc2a544;
+  color: var(--ivory);
+  flex: 1;
+  min-height: 44px;
+  font-size: 9px;
+  padding: 12px 0;
+}
+.craft-navigation button[aria-pressed="true"] {
+  border-color: var(--champagne);
+}
+.craft-navigation button > span:nth-child(2) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.craft-navigation > a {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 9px;
+}
+.craft-credit {
+  position: absolute;
+  left: 25px;
+  bottom: 25px;
+  background: #172014bb;
+  color: #e4dac4;
+  font-size: 8px;
+  padding: 7px 10px;
+  max-width: 280px;
+}
+.craft-scroll-film {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 58%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.craft-chapter.is-static {
+  height: auto;
+}
+.craft-chapter.is-static .craft-sticky {
+  position: relative;
+  height: auto;
+  min-height: 0;
+}
+.craft-chapter.is-static .craft-heading {
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  padding: 65px 8%;
+}
+.craft-chapter.is-static .craft-scenes {
+  position: relative;
+}
+.craft-chapter.is-static .craft-scene {
+  position: relative;
+  height: 700px;
+  opacity: 1;
+  visibility: visible;
+}
+.craft-chapter.is-static .craft-caption {
+  top: 25%;
+}
+.craft-chapter.is-static .craft-navigation {
+  display: none;
+}
+.craft-chapter.is-static .craft-credit {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  padding: 20px 8%;
+  margin: 0;
+  max-width: none;
+}
+/* The room gallery is a sequence of photographic wipes with a separate caption band. */
+.space-gallery {
+  height: 290svh;
+  background: var(--ink);
+  color: var(--ivory);
+}
+.space-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 850px;
+  display: grid;
+  grid-template-rows: 145px 1fr 195px;
+  overflow: hidden;
+}
+.space-heading {
+  grid-row: 1;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 0 8% 28px;
+}
+.space-heading .eyebrow {
+  margin: 0;
+  color: var(--champagne);
+}
+.space-heading > span {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: #c1c3b5;
+}
+.space-stage {
+  position: relative;
+  grid-row: 2;
+  min-height: 0;
+  overflow: hidden;
+}
+.space-frame {
+  position: absolute;
+  inset: 0;
+}
+.space-frame .media {
+  height: 100%;
+  min-height: 0;
+}
+.space-frame img {
+  object-position: center;
+}
+.space-frame .media-label {
+  display: none;
+}
+.space-caption {
+  grid-row: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 45px;
+  padding: 26px 8%;
+  background: var(--ink);
+}
+.space-caption .eyebrow {
+  font-size: 8px;
+  margin-bottom: 8px;
+  color: var(--champagne);
+}
+.space-caption h2 {
+  font-size: 46px;
+  line-height: 1.15;
+}
+.space-provenance {
+  max-width: 480px;
+  font-size: 10px;
+  color: #c4c6b8;
+  margin-top: 10px;
+}
+.space-actions {
+  min-width: 235px;
+}
+.space-index {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-top: 18px;
+}
+.space-index button {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 1px solid #a99f8555;
+  border-radius: 50%;
+  color: inherit;
+}
+.space-index > span {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.space-gallery.is-static {
+  height: auto;
+}
+.space-gallery.is-static .space-sticky {
+  position: relative;
+  height: auto;
+  min-height: 0;
+  display: block;
+  overflow: visible;
+}
+.space-gallery.is-static .space-heading {
+  padding: 60px 8% 35px;
+}
+.space-gallery.is-static .space-stage {
+  overflow: visible;
+}
+.space-gallery.is-static .space-frame {
+  position: relative;
+  inset: auto;
+}
+.space-gallery.is-static .space-frame > .media {
+  height: 65svh;
+  min-height: 350px;
+}
+.space-static-caption {
+  padding: 30px 8% 55px;
+}
+.space-static-caption h2 {
+  font-size: 44px;
+}
+.space-static-caption p {
+  font-size: 12px;
+  color: #c5c5b8;
+  max-width: 600px;
+  margin: 18px 0;
+}
+/* Native horizontal exhibition: touch, mouse, arrows and keyboard all work. */
+.material-exhibition {
+  padding-right: 0;
+  background: var(--ivory);
+}
+.exhibition-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 65px;
+  padding-right: 8%;
+  margin-bottom: 50px;
+}
+.exhibition-heading h2 {
+  font-size: clamp(46px, 5vw, 76px);
+}
+.exhibition-intro {
+  max-width: 290px;
+}
+.exhibition-intro p {
+  font-size: 13px;
+}
+.exhibition-arrows {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+}
+.material-track {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: #a89a7c var(--paper);
+  padding: 0 8% 28px 0;
+  scroll-padding-left: 0;
+}
+.material-card {
+  flex: 0 0 31%;
+  min-width: 260px;
+  scroll-snap-align: start;
+}
+.material-image {
+  height: 420px;
+  overflow: hidden;
+}
+.material-image .media {
+  height: 100%;
+}
+.material-image img {
+  transition: transform 1s ease;
+}
+.material-card:hover img {
+  transform: scale(1.035);
+}
+.material-title {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 24px;
+}
+.material-title h3 {
+  font-size: 27px;
+  flex: 1;
+  line-height: 1.2;
+}
+.material-card > a > p {
+  margin: 10px 0 0 24px;
+  font-size: 11px;
+}
+.material-card .media-label {
+  font-size: 7px;
+  left: 13px;
+  right: 13px;
+  bottom: 13px;
+}
+.visit-spread {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12%;
+  align-items: center;
+  background: var(--paper);
+}
+.visit-spread h2 {
+  font-size: clamp(43px, 4.5vw, 68px);
+  line-height: 1.16;
+}
+.visit-spread > div > p:not(.eyebrow) {
+  max-width: 450px;
+  margin: 25px 0 14px;
+}
+.visit-spread .locations {
+  gap: 35px;
+}
+.visit-spread .locations strong {
+  font: 28px/1.3 var(--serif);
+  margin-bottom: 10px;
+}
+@media (max-width: 1100px) {
+  .craft-heading,
+  .craft-caption,
+  .craft-navigation {
+    left: 63%;
+    right: 6%;
+  }
+  .craft-image,
+  .craft-scroll-film {
+    width: 56%;
+  }
+  .craft-heading h2 {
+    font-size: 42px;
+  }
+  .space-caption h2 {
+    font-size: 40px;
+  }
+  .material-card {
+    flex-basis: 43%;
+  }
+  .film-copy {
+    margin-left: 7%;
+  }
+  .film-title {
+    font-size: 8vw;
+  }
+}
+@media (max-width: 760px) {
+  .film-sticky {
+    min-height: 740px;
+    grid-template-rows: 125px 90px 1fr 90px;
+  }
+  .film-signature img {
+    width: 145px;
+    height: 57px;
+  }
+  .film-signature p {
+    font-size: 6px;
+    letter-spacing: 0.13em;
+    margin-top: 10px;
+  }
+  .film-copy {
+    margin: 0 7%;
+    padding: 25px 0;
+    align-self: center;
+  }
+  .film-title {
+    font-size: clamp(44px, 13.5vw, 77px);
+    line-height: 1.1;
+  }
+  .film-title .film-year {
+    font-size: 0.8em;
+    line-height: 1.2;
+    margin-top: 12px;
+  }
+  .film-copy > .eyebrow {
+    font-size: 7px;
+    margin-bottom: 17px;
+  }
+  .film-copy .text-link {
+    font-size: 10px;
+    margin-top: 24px;
+  }
+  .film-bottom {
+    margin: 0 7%;
+    padding-right: 65px;
+    gap: 15px;
+  }
+  .film-scroll {
+    font-size: 7px;
+    gap: 12px;
+  }
+  .film-select {
+    gap: 5px;
+  }
+  .film-select button {
+    min-width: 30px;
+    font-size: 9px;
+  }
+  .film-credit {
+    right: 7%;
+    bottom: 101px;
+    font-size: 6px;
+    max-width: 210px;
+  }
+  .film-tone {
+    background: #10190e85;
+  }
+  .film-opening.is-static,
+  .film-opening.is-static .film-sticky {
+    min-height: 800px;
+  }
+  .spread-top {
+    gap: 25px;
+  }
+  .spread-top > span {
+    font-size: 6px;
+    max-width: 130px;
+    text-align: right;
+    line-height: 1.8;
+  }
+  .heritage-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: 40px;
+  }
+  .heritage-year {
+    font-size: clamp(125px, 41vw, 200px);
+    line-height: 1.2;
+  }
+  .heritage-origin {
+    gap: 22px;
+  }
+  .heritage-origin figcaption {
+    font-size: 11px;
+  }
+  .heritage-narrative h2 {
+    font-size: 46px;
+    line-height: 1.16;
+  }
+  .heritage-narrative p {
+    font-size: 13px;
+    margin-top: 24px;
+  }
+  .heritage-portrait {
+    grid-column: 1;
+    grid-row: auto;
+    height: 390px;
+  }
+  .heritage-footnote {
+    grid-column: 1;
+    font-size: 8px;
+    max-width: none;
+  }
+  .craft-chapter {
+    height: 260svh;
+  }
+  .craft-sticky {
+    min-height: 830px;
+  }
+  .craft-heading {
+    left: 7%;
+    right: 7%;
+    top: 105px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .craft-heading .eyebrow {
+    font-size: 7px;
+    color: #ece2ca;
+    margin-bottom: 12px;
+  }
+  .craft-heading h2 {
+    font-size: 40px;
+    color: var(--ivory);
+    line-height: 1.12;
+  }
+  .craft-heading em {
+    color: #e1d1b1;
+  }
+  .craft-image,
+  .craft-scroll-film {
+    left: 0;
+    top: 0;
+    bottom: auto;
+    width: 100%;
+    height: 48%;
+  }
+  .craft-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #15201044;
+    pointer-events: none;
+  }
+  .craft-caption {
+    left: 7%;
+    right: 7%;
+    top: 53%;
+  }
+  .craft-caption h3 {
+    font-size: 34px;
+    margin: 13px 0;
+  }
+  .craft-caption p {
+    font-size: 12px;
+    max-width: 310px;
+  }
+  .craft-caption .text-link {
+    margin-top: 13px;
+    font-size: 10px;
+  }
+  .craft-navigation {
+    left: 7%;
+    right: 80px;
+    bottom: 34px;
+  }
+  .craft-navigation > div {
+    gap: 20px;
+  }
+  .craft-navigation > a {
+    font-size: 8px;
+    margin-top: 15px;
+  }
+  .craft-credit {
+    left: 7%;
+    top: 43%;
+    bottom: auto;
+    font-size: 6px;
+    max-width: 230px;
+    padding: 5px 8px;
+  }
+  .craft-chapter.is-static .craft-heading {
+    padding: 55px 7%;
+    pointer-events: auto;
+  }
+  .craft-chapter.is-static .craft-scene {
+    height: 750px;
+  }
+  .craft-chapter.is-static .craft-caption {
+    top: 53%;
+  }
+  .space-sticky {
+    min-height: 850px;
+    grid-template-rows: 125px 1fr 270px;
+  }
+  .space-heading {
+    padding: 0 7% 22px;
+    gap: 25px;
+  }
+  .space-heading .eyebrow {
+    font-size: 7px;
+  }
+  .space-heading > span {
+    font-size: 6px;
+    max-width: 140px;
+    text-align: right;
+    line-height: 1.8;
+  }
+  .space-caption {
+    display: block;
+    padding: 22px 7%;
+  }
+  .space-caption h2 {
+    font-size: 37px;
+    line-height: 1.16;
+  }
+  .space-caption .eyebrow {
+    font-size: 7px;
+    margin-bottom: 8px;
+  }
+  .space-provenance {
+    font-size: 9px;
+    line-height: 1.7;
+    margin-top: 10px;
+    max-width: 290px;
+  }
+  .space-actions {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 17px;
+  }
+  .space-actions > .text-link {
+    font-size: 9px;
+    gap: 15px;
+  }
+  .space-index {
+    gap: 8px;
+    margin: 0;
+  }
+  .space-index button {
+    min-width: 35px;
+    min-height: 40px;
+    border: 0;
+  }
+  .space-index > span {
+    font-size: 8px;
+    white-space: nowrap;
+  }
+  .space-gallery.is-static .space-heading {
+    padding: 50px 7% 25px;
+  }
+  .space-static-caption {
+    padding: 25px 7% 45px;
+  }
+  .material-exhibition {
+    padding-right: 0;
+  }
+  .exhibition-heading {
+    display: block;
+    padding-right: 7%;
+    margin-bottom: 35px;
+  }
+  .exhibition-heading h2 {
+    font-size: 48px;
+    line-height: 1.15;
+  }
+  .exhibition-intro {
+    max-width: none;
+    margin-top: 25px;
+    display: flex;
+    gap: 25px;
+    align-items: end;
+  }
+  .exhibition-intro p {
+    font-size: 12px;
+    flex: 1;
+  }
+  .exhibition-arrows {
+    gap: 8px;
+    margin: 0;
+  }
+  .exhibition-arrows button {
+    width: 40px;
+    height: 44px;
+  }
+  .material-track {
+    gap: 22px;
+  }
+  .material-card {
+    flex-basis: 78%;
+    min-width: 0;
+  }
+  .material-image {
+    height: 365px;
+  }
+  .material-title {
+    gap: 10px;
+  }
+  .material-title h3 {
+    font-size: 27px;
+  }
+  .material-card > a > p {
+    font-size: 10px;
+  }
+  .visit-spread {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .visit-spread h2 {
+    font-size: 44px;
+    line-height: 1.17;
+  }
+  .visit-spread .locations strong {
+    font-size: 27px;
+  }
+}
+@media (max-height: 760px) and (min-width: 761px) {
+  .film-sticky {
+    min-height: 100svh;
+    grid-template-rows: 115px 70px 1fr 80px;
+  }
+  .film-signature img {
+    width: 140px;
+    height: 54px;
+  }
+  .film-signature p {
+    font-size: 6px;
+  }
+  .film-title {
+    font-size: clamp(50px, 6vw, 85px);
+  }
+  .film-copy {
+    padding: 15px 0;
+  }
+  .film-copy .eyebrow {
+    margin-bottom: 12px;
+  }
+  .film-copy .text-link {
+    margin-top: 12px;
+  }
+  .film-credit {
+    bottom: 95px;
+  }
+  .craft-sticky {
+    min-height: 760px;
+  }
+  .space-sticky {
+    min-height: 760px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-opening {
+    height: 100svh;
+    min-height: 800px;
+  }
+  .film-sticky {
+    position: relative;
+    min-height: 800px;
+  }
+  .film-images img,
+  .craft-image img {
+    transform: none !important;
+  }
+  .craft-chapter,
+  .space-gallery {
+    height: auto;
+  }
+  .craft-sticky,
+  .space-sticky {
+    position: relative;
+  }
+  .material-track {
+    scroll-behavior: auto;
+  }
+}
+/* A sticky scene must fit the actual viewport, not an assumed tall display. */
+.film-copy {
+  pointer-events: none;
+}
+.film-copy a {
+  pointer-events: auto;
+}
+.craft-sticky,
+.space-sticky {
+  min-height: 0;
+}
+.film-images .film-control {
+  bottom: 34px;
+  right: calc(8% + 135px);
+}
+@media (max-width: 760px) {
+  .space-index {
+    position: absolute;
+    right: 7%;
+    bottom: 285px;
+    padding: 4px 8px;
+    background: #1c221dcc;
+    border: 1px solid #a99f8544;
+  }
+  .film-images .film-control {
+    right: calc(7% + 75px);
+    bottom: 30px;
+  }
+}
+@media (max-height: 700px) and (min-width: 761px) {
+  .craft-heading {
+    top: 110px;
+  }
+  .craft-heading h2 {
+    font-size: 34px;
+  }
+  .craft-caption {
+    top: 43%;
+  }
+  .craft-caption h3 {
+    font-size: 31px;
+    margin: 14px 0;
+  }
+  .craft-caption p {
+    font-size: 12px;
+  }
+  .craft-caption .text-link {
+    margin-top: 12px;
+  }
+  .craft-navigation {
+    bottom: 24px;
+  }
+}
+@media (min-width: 761px) {
+  .space-caption {
+    padding-right: 185px;
+  }
+}
+/* Keep media controls above the scene background, with passive editorial layers. */
+.film-images {
+  z-index: 0;
+}
+.film-tone {
+  z-index: 1;
+}
+.film-signature,
+.film-copy,
+.film-bottom {
+  position: relative;
+  z-index: 2;
+}
+.film-signature,
+.film-bottom {
+  pointer-events: none;
+}
+.film-bottom a,
+.film-bottom button {
+  pointer-events: auto;
+}
+.film-credit {
+  z-index: 2;
+  pointer-events: none;
+}

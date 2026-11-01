@@ -66,7 +66,11 @@ export default function Media({
               className="film-control"
               onClick={() => {
                 const v = videoRef.current;
-                if (v.paused) v.play().catch(() => setFailed(true));
+                if (v.paused)
+                  v.play().catch((error) => {
+                    // Pausing during a motion-preference change can cancel a pending play.
+                    if (error.name !== "AbortError") setFailed(true);
+                  });
                 else v.pause();
               }}
             >

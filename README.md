@@ -1,127 +1,100 @@
-# GVK Decor
+# GVK Decor — Atelier 05
 
 **Crafting Timeless Spaces Since 1959**
 
-The existing GVK Decor luxury portfolio, built with React and Vite. Six pages:
-Home, Our Legacy, Collections, Projects, Behind the Craft and Contact. No store,
-checkout, payment, public deployment or analytics is configured.
+The existing six-page GVK Decor luxury portfolio: Home, Our Legacy, Collections,
+Projects, Behind the Craft and Contact. No e-commerce or public deployment.
 
-## Private Windows preview
+## Review the NEW version on Windows
 
-1. Install Node.js **LTS** from https://nodejs.org/.
-2. Download the **main** branch from GitHub via **Code → Download ZIP**, then
-   **Extract All**. Use a fresh download for this revision.
-3. Open the extracted folder containing package.json and double-click
-   **START-PREVIEW.cmd**. Wait for **VITE ready**.
-4. Open **http://127.0.0.1:5173** in Chrome. Keep the command window open;
-   press **Ctrl+C** there to stop.
+An old downloaded ZIP does **not** update when GitHub changes.
 
-The helper binds only to your Windows computer. It does not upload files,
-push Git changes or publish the website. Full troubleshooting and manual commands:
-[Windows preview guide](docs/WINDOWS-PREVIEW.md). The application was built and browser-tested on Linux; the .cmd file itself
-has not been executed on Windows here.
+1. Stop the old preview terminal with **Ctrl+C**.
+2. Download **main → Code → Download ZIP** again and **Extract All** into a new folder.
+3. Install current **Node.js LTS** from https://nodejs.org/ if needed.
+4. Double-click **START-PREVIEW.cmd** in the new folder.
+5. Open **http://127.0.0.1:5173** in Chrome, press **Ctrl+Shift+R**, and verify the
+   **GVK-ATELIER-05** badge at bottom left.
 
-## Development and verification
+The launcher binds only to your computer, checks port occupancy and dependency
+fingerprints, and identifies the folder being served. It does not publish or push
+anything. [Detailed Windows instructions](docs/WINDOWS-PREVIEW.md).
+The portable launcher has been exercised in Linux; Windows-specific execution
+cannot be verified on this machine.
 
-Requires Node.js 22.12+ (validated on 24.19), npm and a modern browser.
+## Development
+
+Node.js 22.12+ and npm are required (validated on Node 24.19).
 
 ```sh
 npm ci
 npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
-```
-
-```sh
 npm run build
 npm test
 npm run format:check
 ```
 
-Browser tests use `/usr/bin/chromium` in this cloud environment. On another
-machine, remove executablePath from playwright.config.js and run
-`npx playwright install chromium` before testing. Deployment, if later approved,
-must rewrite application routes to index.html for React Router deep links.
+Browser tests use `/usr/bin/chromium`. On another machine, adjust executablePath
+in playwright.config.js or use Playwright's installed Chromium after
+`npx playwright install chromium`. A future approved deployment needs SPA route
+rewrites to index.html. No hosting/deployment configuration is added here.
 
-## Current brand and media status
+## Creative correction
 
-The uploaded **GVK Decor_Pitch Deck.pdf** was reviewed page by page. Its embedded
-gold logo was extracted with its alpha mask and transparent padding trimmed;
-the artwork was not redrawn or recoloured. Selected photographs were extracted
-and optimized as WebP; collage panels were cropped at their existing boundaries.
-Their source pages, PDF image IDs, crop rectangles, dimensions and selection
-reasons are recorded in [the media manifest](docs/deck-media-manifest.json).
-The 21MB source PDF stays outside the public application.
+The prior homepage components and accumulated override stylesheet were removed.
+Atelier 05 uses new photography-first scenes and a clean shared design system:
 
-The opening uses the deck's largest room photograph, pending an actual opening
-film. The craft sequence uses deck curtain and handwork photographs. Three
-source-attributed deck selections have full-screen presentations and galleries.
-Their titles describe images, not invented completed projects. Project names,
-locations, credits and permissions need confirmation before final case studies.
-`projects` remains empty; `deckSelections` is explicitly separate.
+- `src/styles.css`: shared typography, navigation, footer, forms and interior pages.
+- `src/experience.css`: restrained ivory/charcoal/champagne homepage compositions.
+- `src/components/experience/FilmOpening.jsx`: full-bleed image, contained gold-logo
+  reveal, exact tagline in flow layout, gentle scale and changing photographic frames.
+- `HeritageSpread.jsx`: a separate year/caption figure, narrative and image spread.
+- `CraftChapter.jsx`: three scroll-controlled craft chapters with separate image
+  and text zones; readable static panels for reduced motion.
+- `SpaceGallery.jsx`: full-screen photographic wipes and a separate caption band;
+  accessible gallery viewer, selection controls and source attribution.
+- `MaterialExhibition.jsx`: native horizontal exhibition with touch/keyboard/arrow
+  access, without forcing visitors through a long pinned horizontal sequence.
 
-**No real video clips have been supplied.** Review them before choosing a final
-opening film or scroll-scrub cut. See [media review and outstanding files](docs/MEDIA-REVIEW.md).
-The deck uses an older tagline and contact details; the latest user-supplied
-exact tagline, phone, WhatsApp and email take precedence.
+GSAP ScrollTrigger drives the primary visual sequences. Page transitions use the
+native View Transitions API with ordinary-navigation fallback. Fonts are self-hosted.
+[Section-by-section motion notes](docs/MOTION-REVIEW.md).
 
-## Structure and motion
+## Media honesty and import status
 
-- `src/data/site.js`: exact tagline, gold logo path, both locations, collection
-  assets, source-attributed deck selections, verified projects and film slots.
-- `src/Home.jsx`: opening, heritage, collection explorer and visit invitation.
-- `src/components/ScrollStory.jsx`: native sticky three-stage scroll sequence,
-  chapter controls, skip link and optional paused video scrubbing. Reduced motion
-  becomes a static readable chapter stack; no scroll/touch interception.
-- `src/components/PortfolioStage.jsx`: full-screen verified projects or distinctly
-  attributed deck selections. Reuses the keyboard-accessible ProjectViewer.
-- `src/components/Media.jsx`: responsive/lazy images, posters, explicit film play,
-  off-screen pause and load-error fallback.
-- `src/hooks/useExperience.js`: observer-based reveals, rAF-batched parallax and
-  native View Transitions with ordinary-navigation fallback.
-- `src/components/Locations.jsx`: consistent branch details across home/menu/footer/contact.
-- `src/pages.jsx`: remaining page views and appointment enquiry form.
-- `public/media/README.md`: adding actual Drive originals as optimized web assets.
+The supplied gold logo and reviewed photographs come from the uploaded
+GVK Decor_Pitch Deck.pdf. Logo extraction preserves the original artwork; photos
+are optimized WebP crops of the deck's existing collage panels. Source pages and
+crop rectangles are recorded in [the manifest](docs/deck-media-manifest.json).
+The source PDF is not exposed by the website.
 
-Self-hosted fonts; GSAP ScrollTrigger for the cinematic sequences, with no forced media autoplay. Decorative
-cursor is desktop-only and keeps the native cursor. Reduced motion removes
-parallax, text reveals, cursor effects and route-transition animation.
+**Original Drive files remain inaccessible.** There is no connected Drive import
+tool in this session, and the current proxy policy still blocks drive.google.com.
+No inaccessible photos/videos have been reviewed. A fresh sample request remained
+403; the earlier per-folder check of all 14 URLs is preserved in the access report.
+The two external reference sites were also blocked; their written design principles,
+not copied layouts or assets, informed the design.
 
-## Editable contact details
+The supported fallback is to attach original files or a per-project ZIP in chat.
+Start with 3–5 landscape photographs, 2–3 room/fabric-motion clips, 2–3 craft details,
+and approved project attribution/permissions. Preserve filenames. See
+[media access and upload requirements](docs/DRIVE-ACCESS.md).
 
-- GVK Decor Experience Centre — Road No. 39, Jubilee Hills, Hyderabad
-- GVK Decor Store — Secunderabad, Hyderabad
-- Phone: +91 89776 30636
-- WhatsApp: +91 89770 30636
-- Enquiry email: gvkdecor@gmail.com
+No footage or completed project identities are invented. `projects` is empty;
+`deckSelections` has explicitly attributed descriptive image groups. The opening
+film cannot be finalized until original clips are accessible and reviewed.
 
-Edit `src/data/site.js`. Public email and WhatsApp overrides are supported via
-VITE_APPOINTMENT_EMAIL and VITE_WHATSAPP_NUMBER in .env.local (see .env.example).
-Never put secrets in browser-exposed VITE variables.
+## Brand, locations and enquiries
 
-The appointment enquiry form retains required fields and consent, adds branch
-selection, and prepares a reviewable mailto link. It does not store data or
-send email automatically, and does not confirm bookings. Test real mail-app
-and WhatsApp handoff on target Windows/mobile devices before approved launch.
+Central data: `src/data/site.js`. Both branches remain visible:
 
-## GVK-CINEMA-04 redesign and the old-ZIP problem
+- Experience Centre — Road No. 39, Jubilee Hills, Hyderabad
+- Store — Secunderabad, Hyderabad
 
-An old ZIP **does not update** when commits are pushed to GitHub. Stop the old
-server, download main again, extract to a new folder, and open START-PREVIEW.cmd.
-Look for the **GVK-CINEMA-04** badge in the local browser. The badge is dev-only
-and is omitted from production builds. See docs/WINDOWS-PREVIEW.md.
+Phone +91 89776 30636; WhatsApp +91 89770 30636; email gvkdecor@gmail.com.
+Existing public overrides VITE_WHATSAPP_NUMBER and VITE_APPOINTMENT_EMAIL remain
+supported via .env.local. Never put secrets in VITE variables.
 
-GSAP + ScrollTrigger now drive the opening's expanding aperture, layered title
-movement, image zoom and horizontal furnishing rail. Full-screen portfolio panels
-overlap and reveal. The desktop cursor has contextual labels and a damped pointer
-ring. All animations have static reduced-motion layouts; normal vertical scrolling
-is preserved without intercepting wheel/touch events.
-
-The opening uses reviewed pitch-deck stills, explicitly labelled as a still-image
-sequence. The authentic-video acceptance criterion remains **blocked on media**:
-all 14 supplied Drive folders were denied by the environment proxy before any
-contents could be listed. See docs/DRIVE-ACCESS.md and the per-folder access report.
-Do not call the supplied Drive videos reviewed or the real opening film complete.
-
-The Windows launcher now checks Node version, lockfile fingerprint, port occupancy
-and folder identity; it opens a browser only after Vite reports ready. Its portable
-logic can be checked with `node scripts/preview-local.mjs --check`. Windows-specific
-execution remains to be confirmed on the user's laptop.
+The appointment form retains validation, consent and branch selection. It prepares
+a reviewable mailto message and does not send automatically or confirm a booking.
+The latest user-provided tagline and contacts take precedence over older deck text.
